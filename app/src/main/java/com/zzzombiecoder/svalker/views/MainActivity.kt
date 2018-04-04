@@ -12,9 +12,10 @@ import android.util.Log
 import android.view.View
 import com.tbruyelle.rxpermissions2.RxPermissions
 import com.zzzombiecoder.svalker.R
-import com.zzzombiecoder.svalker.service.EX_DOUBLE_ARRAY
+import com.zzzombiecoder.svalker.service.EX_SPECTRUM_DATA
 import com.zzzombiecoder.svalker.service.SVALKER_ACTION
 import com.zzzombiecoder.svalker.service.SvalkerService
+import com.zzzombiecoder.svalker.spectrum.analysis.SpectrumData
 import com.zzzombiecoder.svalker.utils.plusAssign
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -30,7 +31,7 @@ class MainActivity : AppCompatActivity() {
     private val serviceIntent: Intent by lazy { Intent(this, SvalkerService::class.java) }
     private val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
-            val data = intent.getDoubleArrayExtra(EX_DOUBLE_ARRAY)
+            val data = intent.getParcelableExtra<SpectrumData>(EX_SPECTRUM_DATA)
             dummySpectrumView.feedData(data)
         }
     }

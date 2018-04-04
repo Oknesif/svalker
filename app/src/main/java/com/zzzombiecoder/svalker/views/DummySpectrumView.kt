@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
+import com.zzzombiecoder.svalker.spectrum.analysis.SpectrumData
 
 class DummySpectrumView @JvmOverloads constructor(
         context: Context,
@@ -14,7 +15,7 @@ class DummySpectrumView @JvmOverloads constructor(
         defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    private var data: DoubleArray? = null
+    private var data: SpectrumData? = null
     private val paint = Paint()
 
     init {
@@ -22,14 +23,16 @@ class DummySpectrumView @JvmOverloads constructor(
         paint.color = Color.GREEN
     }
 
-    fun feedData(data: DoubleArray) {
+    fun feedData(data: SpectrumData) {
         this.data = data
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        data?.let {
-            Log.d("ShowMeView", "Length: ${it.size}, max value: ${it.max()} at posdataion ${it.maxPosition()}")
+        data?.amplitudeArray?.let {
+            val maxPosition = it.maxPosition()
+            val maxDB = it[maxPosition]
+            Log.d("ShowMeView", "Length: ${it.size}, max value: $maxDB at position $maxPosition, with frequency: ${data?.maxFrequency} Gz")
             for (i in 0 until canvas.width) {
                 if (i < it.size - 1) {
                     val dotToDraw = it[i]

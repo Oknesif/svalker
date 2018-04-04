@@ -348,7 +348,7 @@ public class STFT {
     }
 
     /**
-     * What is RMS???
+     * RMS - root mean square, среднеквадратичное
      */
     double getRMS() {
         if (cntRMS > 8000 / 30) {

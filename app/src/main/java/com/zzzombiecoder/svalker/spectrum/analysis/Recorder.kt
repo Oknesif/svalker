@@ -2,8 +2,6 @@ package com.zzzombiecoder.svalker.spectrum.analysis
 
 import android.media.AudioFormat
 import android.media.AudioRecord
-import com.zzzombiecoder.svalker.spectrum.analysis.AnalyzerParameters
-import com.zzzombiecoder.svalker.spectrum.analysis.STFT
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
 
@@ -30,7 +28,7 @@ class Recorder {
 
     }
 
-    fun getSpectrumAmpDB(mSec: Long): Observable<DoubleArray> =
+    fun getSpectrumAmpDB(mSec: Long): Observable<SpectrumData> =
             Observable.interval(mSec, TimeUnit.MILLISECONDS)
                     .doOnSubscribe {
                         record = createRecorder()
@@ -48,7 +46,8 @@ class Recorder {
                     }
                     .filter { stft.nElemSpectrumAmp() >= analyzerParam.nFFTAverage }
                     .map {
-                        stft.spectrumAmpDB
+                        stft.calculatePeak()
+                        SpectrumData(stft.spectrumAmpDB, stft.maxAmpFreq)
                     }
                     .share()
 }

@@ -24,12 +24,12 @@ class SvalkerService : Service() {
 
     override fun onCreate() {
         notificationController.onCreate()
-        recorder.getSpectrumAmpDB(50)
+        disposable = recorder.getSpectrumAmpDB(50)
                 .subscribe({
                     LocalBroadcastManager
                             .getInstance(this)
                             .sendBroadcast(Intent().apply {
-                                putExtra(EX_DOUBLE_ARRAY, it)
+                                putExtra(EX_SPECTRUM_DATA, it)
                                 action = SVALKER_ACTION
                             })
                 }, {
@@ -47,4 +47,4 @@ class SvalkerService : Service() {
 }
 
 const val SVALKER_ACTION: String = "SVALKER_ACTION"
-const val EX_DOUBLE_ARRAY: String = "EX_DOUBLE_ARRAY"
+const val EX_SPECTRUM_DATA: String = "EX_SPECTRUM_DATA"

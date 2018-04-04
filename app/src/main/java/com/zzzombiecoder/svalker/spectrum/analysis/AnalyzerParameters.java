@@ -27,17 +27,10 @@ public class AnalyzerParameters {
     public int sampleRate = 16000;
     public int fftLen = 2048;
     public int hopLen = 1024;
-    double overlapPercent = 50;  // = (1 - hopLen/fftLen) * 100%
     String wndFuncName = "Hanning";
     public int nFFTAverage = 2;
-    boolean isAWeighting = false;
     public final int BYTE_OF_SAMPLE = 2;
     final double SAMPLE_VALUE_MAX = 32767.0;   // Maximum signal value
-    double spectrogramDuration = 4.0;
 
     double[] micGainDB = null;  // should have fftLen/2+1 elements, i.e. include DC.
-    String calibName = null;
-
-    public AnalyzerParameters() {}
-
 }
