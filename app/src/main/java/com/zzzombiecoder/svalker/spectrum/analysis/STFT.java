@@ -13,14 +13,14 @@
  * limitations under the License.
  */
 
-package github.bewantbe.audio_analyzer_for_android;
+package com.zzzombiecoder.svalker.spectrum.analysis;
 
 import android.util.Log;
 
 import java.util.Arrays;
 
-import fft.RealDoubleFFT;
-import fft.besselCal;
+import com.zzzombiecoder.svalker.spectrum.analysis.fft.RealDoubleFFT;
+import com.zzzombiecoder.svalker.spectrum.analysis.fft.besselCal;
 
 import static java.lang.Math.PI;
 import static java.lang.Math.abs;

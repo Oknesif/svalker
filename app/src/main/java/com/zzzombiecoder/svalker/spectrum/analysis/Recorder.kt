@@ -1,9 +1,9 @@
-package com.zzzombiecoder.svalker
+package com.zzzombiecoder.svalker.spectrum.analysis
 
 import android.media.AudioFormat
 import android.media.AudioRecord
-import github.bewantbe.audio_analyzer_for_android.AnalyzerParameters
-import github.bewantbe.audio_analyzer_for_android.STFT
+import com.zzzombiecoder.svalker.spectrum.analysis.AnalyzerParameters
+import com.zzzombiecoder.svalker.spectrum.analysis.STFT
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
 
@@ -51,5 +51,4 @@ class Recorder {
                         stft.spectrumAmpDB
                     }
                     .share()
-
 }

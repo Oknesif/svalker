@@ -25,7 +25,7 @@
  * @author Astronomical Instrument Group of University of Lethbridge.
  */
 
-package fft;
+package com.zzzombiecoder.svalker.spectrum.analysis.fft;
 
 public class RealDoubleFFT extends RealDoubleFFT_Mixed {
   /**

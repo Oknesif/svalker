@@ -1,6 +1,6 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package com.zzzombiecoder.svalker
+package com.zzzombiecoder.svalker.service
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -9,38 +9,32 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.os.IBinder
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
+import com.zzzombiecoder.svalker.views.MainActivity
+import com.zzzombiecoder.svalker.R
 
+class NotificationController(private val service: Service) {
 
-class SvalkerService : Service() {
+    private val manager: NotificationManager
+            by lazy { service.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
+    private val managerCompat: NotificationManagerCompat
+            by lazy { NotificationManagerCompat.from(service) }
 
-    private val manager: NotificationManager by lazy {
-        this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    }
-    private val managerCompat: NotificationManagerCompat by lazy {
-        NotificationManagerCompat.from(this)
-    }
-
-    override fun onBind(intent: Intent?): IBinder? = null
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+    fun onCreate() {
         createNotification()
-        return super.onStartCommand(intent, flags, startId)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    fun onDestroy() {
+        manager.cancel(NOTIFICATION_ID.hashCode())
     }
 
     private inline fun createNotification() {
         createChannel()
+        val intent = Intent(service, MainActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(service, 0, intent, 0)
 
-        val intent = Intent(this, MainActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
-
-        val notification = NotificationCompat.Builder(this, "STALKER")
+        val notification = NotificationCompat.Builder(service, "STALKER")
                 .setSmallIcon(R.drawable.ic_wb_sunny)
                 .setContentText("КПК Зона")
                 .setPriority(NotificationCompat.PRIORITY_MIN)
@@ -60,6 +54,7 @@ class SvalkerService : Service() {
         }
     }
 }
+
 
 private const val CHANNEL_ID = "SVALKER_ID"
 private const val NOTIFICATION_ID = "SVALKER_NOTIFICATION_ID"

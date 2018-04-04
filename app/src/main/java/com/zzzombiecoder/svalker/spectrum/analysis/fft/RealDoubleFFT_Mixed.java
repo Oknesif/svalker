@@ -24,7 +24,7 @@
  * @author Baoshe Zhang
  * @author Astronomical Instrument Group of University of Lethbridge.
  */
-package fft;
+package com.zzzombiecoder.svalker.spectrum.analysis.fft;
 
 class RealDoubleFFT_Mixed {
   static final int[] ntryh= new int[] {4, 2, 3, 5};

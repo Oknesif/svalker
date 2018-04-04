@@ -1,4 +1,4 @@
-package fft;
+package com.zzzombiecoder.svalker.spectrum.analysis.fft;
 
 public class besselCal {
 /*
