@@ -1,21 +1,18 @@
 package com.zzzombiecoder.svalker.views
 
 import android.Manifest
-import android.content.BroadcastReceiver
-import android.content.Context
+import android.content.ComponentName
 import android.content.Intent
-import android.content.IntentFilter
+import android.content.ServiceConnection
 import android.os.Bundle
-import android.support.v4.content.LocalBroadcastManager
+import android.os.IBinder
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import com.tbruyelle.rxpermissions2.RxPermissions
 import com.zzzombiecoder.svalker.R
-import com.zzzombiecoder.svalker.service.EX_SPECTRUM_DATA
-import com.zzzombiecoder.svalker.service.SVALKER_ACTION
+import com.zzzombiecoder.svalker.service.ServiceBinder
 import com.zzzombiecoder.svalker.service.SvalkerService
-import com.zzzombiecoder.svalker.spectrum.analysis.SpectrumData
 import com.zzzombiecoder.svalker.utils.plusAssign
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -26,13 +23,25 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var dummySpectrumView: DummySpectrumView
     private lateinit var stopServiceButton: View
-    private val disposable: CompositeDisposable = CompositeDisposable()
+    private lateinit var disposable: CompositeDisposable
 
     private val serviceIntent: Intent by lazy { Intent(this, SvalkerService::class.java) }
-    private val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent) {
-            val data = intent.getParcelableExtra<SpectrumData>(EX_SPECTRUM_DATA)
-            dummySpectrumView.feedData(data)
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceDisconnected(name: ComponentName?) {
+            finish()
+        }
+
+        override fun onServiceConnected(name: ComponentName?, service: IBinder) {
+            disposable += Observable.interval(100, TimeUnit.MILLISECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe {
+                        dummySpectrumView.invalidate()
+                    }
+            disposable += (service as ServiceBinder)
+                    .getSpectrumData()
+                    .subscribe {
+                        dummySpectrumView.feedData(it)
+                    }
         }
     }
 
@@ -41,25 +50,18 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         dummySpectrumView = findViewById(R.id.show_me_view)
         stopServiceButton = findViewById(R.id.stop_service_button)
-
         stopServiceButton.setOnClickListener { stopService(serviceIntent) }
-        disposable += Observable.interval(100, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    dummySpectrumView.invalidate()
-                }
     }
 
     override fun onStart() {
         super.onStart()
-        LocalBroadcastManager
-                .getInstance(this)
-                .registerReceiver(broadcastReceiver, IntentFilter(SVALKER_ACTION))
+        disposable = CompositeDisposable()
         disposable += RxPermissions(this)
                 .request(Manifest.permission.RECORD_AUDIO)
                 .subscribe({
                     if (it) {
                         startService(serviceIntent)
+                        bindService(serviceIntent, serviceConnection, 0)
                     }
                 }, {
                     Log.d("MainActivity", Log.getStackTraceString(it))
@@ -68,9 +70,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
+        unbindService(serviceConnection)
         disposable.dispose()
-        LocalBroadcastManager
-                .getInstance(this)
-                .unregisterReceiver(broadcastReceiver)
     }
 }

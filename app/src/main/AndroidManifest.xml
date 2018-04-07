@@ -19,7 +19,9 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".service.SvalkerService" />
+        <service
+            android:name=".service.SvalkerService"
+            android:exported="false" />
 
     </application>
 
