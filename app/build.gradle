@@ -31,6 +31,8 @@ dependencies {
 
     implementation 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.5@aar'
 
+    implementation 'androidx.core:core-ktx:0.3'
+
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
 }

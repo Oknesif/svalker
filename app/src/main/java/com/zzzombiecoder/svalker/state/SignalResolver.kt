@@ -16,28 +16,16 @@ private class SpectrumAnalyser : ObservableTransformer<SpectrumData, Signal> {
 
         return Observable.create<Signal> { emitter ->
             val disposable = upstream.subscribe({
-                if (isLoudEnough(it)) {
-
-                    val timeStamp = SystemClock.uptimeMillis()
-                    val signal: Signal = getSignal(it)
-
-                    if (signal != Signal.None) {
-                        val(recodedSignal, recodedTimeStamp) = firstInSequence
-                        if (recodedSignal == signal) {
-                            if ((timeStamp - recodedTimeStamp) >= signal.timePeriodMls) {
-                                firstInSequence = emptyRecord()
-                                emitter.onNext(signal)
-                            }
-                        } else {
-                            firstInSequence = Pair(signal, timeStamp)
-                        }
-                    } else {
+                val timeStamp = SystemClock.uptimeMillis()
+                val signal: Signal = if (isLoudEnough(it)) getSignal(it) else Signal.None
+                val (recodedSignal, recodedTimeStamp) = firstInSequence
+                if (recodedSignal == signal) {
+                    if ((timeStamp - recodedTimeStamp) >= signal.timePeriodMls) {
                         firstInSequence = emptyRecord()
-                        emitter.onNext(Signal.None)
+                        emitter.onNext(signal)
                     }
                 } else {
-                    firstInSequence = emptyRecord()
-                    emitter.onNext(Signal.None)
+                    firstInSequence = Pair(signal, timeStamp)
                 }
             }, {
                 emitter.onError(it)
@@ -64,5 +52,3 @@ private class SpectrumAnalyser : ObservableTransformer<SpectrumData, Signal> {
 
     private fun emptyRecord(): Pair<Signal, Long> = Pair(Signal.None, 0L)
 }
-
-private const val MIN_DB: Double = -30.0

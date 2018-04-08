@@ -9,12 +9,13 @@ import android.os.IBinder
 import android.util.Log
 import com.zzzombiecoder.svalker.spectrum.analysis.Recorder
 import com.zzzombiecoder.svalker.spectrum.analysis.SpectrumData
-import com.zzzombiecoder.svalker.state.State
-import com.zzzombiecoder.svalker.state.toSignal
+import com.zzzombiecoder.svalker.state.*
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
+import java.util.concurrent.TimeUnit
 
 
 class SvalkerService : Service() {
@@ -23,24 +24,34 @@ class SvalkerService : Service() {
 
     private val stateSubject: Subject<State> = BehaviorSubject.create()
     private val spectrumDataSubject: Subject<SpectrumData> = BehaviorSubject.create()
+    private val signalSubject: Subject<Signal> = BehaviorSubject.create()
+    private val commandSubject: Subject<Command> = BehaviorSubject.create()
 
     private lateinit var disposable: CompositeDisposable
 
     override fun onBind(intent: Intent?): IBinder {
         return object : ServiceBinder, Binder() {
+            override fun setCommandSource(commandSource: Observable<Command>) {
+                commandSource.subscribe(commandSubject)
+            }
 
             override fun getStateUpdates(): Observable<State> {
-                return stateSubject
+                return stateSubject.observeOn(AndroidSchedulers.mainThread())
             }
 
             override fun getSpectrumData(): Observable<SpectrumData> {
                 Log.d("Service", "getSpectrumData")
                 return spectrumDataSubject
             }
+
+            override fun getSignal(): Observable<Signal> {
+                return signalSubject.observeOn(AndroidSchedulers.mainThread())
+            }
         }
     }
 
     override fun onCreate() {
+        stateSubject.onNext(State.Normal())
         notificationController.onCreate()
         disposable = CompositeDisposable()
         val spectrumData = Recorder().getSpectrumAmpDB(50)
@@ -49,13 +60,21 @@ class SvalkerService : Service() {
                 }, {
                     Log.e("SvalkerService", "getSpectrumAmpDB", it)
                 })
-        val signalChecker = spectrumDataSubject
+        val life = Observable.interval(1, TimeUnit.SECONDS)
+                .map { Life() }
+        val signals = spectrumDataSubject
                 .toSignal()
-                .subscribe {
-                    Log.d("SvalkerService", "Emitted signal: $it")
-                }
+                .subscribe { signalSubject.onNext(it) }
+        val signalEffects = signalSubject.map { it.toEffect() }
+        val commands = commandSubject.map { it.toEffect() }
+        val effects = Observable.merge(life, signalEffects, commands)
+        val stateChanges = effects.scan(State.Normal() as State) { state, effect ->
+            effect.apply(state)
+        }.subscribe {
+            stateSubject.onNext(it)
+        }
 
-        disposable = CompositeDisposable(spectrumData, signalChecker)
+        disposable = CompositeDisposable(spectrumData, stateChanges, signals)
         super.onCreate()
     }
 

@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">Stalker</string>
+    <string name="state">Статус</string>
+    <string name="normal">Нормальный</string>
+    <string name="dead">Мертв</string>
+    <string name="zombie">Зомби</string>
+    <string name="health">Здоровье</string>
+    <string name="radiation">Радиация</string>
+    <string name="last_received_signal">Последний полученный сигнал: </string>
+    <string name="radiation_spot">радиационное пятно</string>
+    <string name="electra">электра</string>
+    <string name="graveyard">могильник</string>
+    <string name="none">ничего</string>
+    <string name="graveyard_time">Время в мертвяке: </string>
+
 </resources>

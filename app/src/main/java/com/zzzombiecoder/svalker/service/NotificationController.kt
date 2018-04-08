@@ -11,8 +11,8 @@ import android.content.Intent
 import android.os.Build
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
-import com.zzzombiecoder.svalker.views.MainActivity
 import com.zzzombiecoder.svalker.R
+import com.zzzombiecoder.svalker.views.MainActivity
 
 class NotificationController(private val service: Service) {
 
@@ -35,7 +35,7 @@ class NotificationController(private val service: Service) {
         val pendingIntent = PendingIntent.getActivity(service, 0, intent, 0)
 
         val notification = NotificationCompat.Builder(service, "STALKER")
-                .setSmallIcon(R.drawable.ic_wb_sunny)
+                .setSmallIcon(R.drawable.ic_sentiment)
                 .setContentText("КПК Зона")
                 .setPriority(NotificationCompat.PRIORITY_MIN)
                 .setContentIntent(pendingIntent)
