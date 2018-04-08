@@ -5,14 +5,14 @@ package com.zzzombiecoder.svalker.service
 import android.app.Service
 import android.content.Intent
 import android.os.Binder
-import android.os.Handler
 import android.os.IBinder
 import android.util.Log
 import com.zzzombiecoder.svalker.spectrum.analysis.Recorder
 import com.zzzombiecoder.svalker.spectrum.analysis.SpectrumData
 import com.zzzombiecoder.svalker.state.State
+import com.zzzombiecoder.svalker.state.toSignal
 import io.reactivex.Observable
-import io.reactivex.disposables.Disposable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
 
@@ -23,7 +23,8 @@ class SvalkerService : Service() {
 
     private val stateSubject: Subject<State> = BehaviorSubject.create()
     private val spectrumDataSubject: Subject<SpectrumData> = BehaviorSubject.create()
-    private lateinit var disposable: Disposable
+
+    private lateinit var disposable: CompositeDisposable
 
     override fun onBind(intent: Intent?): IBinder {
         return object : ServiceBinder, Binder() {
@@ -40,19 +41,25 @@ class SvalkerService : Service() {
     }
 
     override fun onCreate() {
-        Handler()
         notificationController.onCreate()
-        disposable = Recorder().getSpectrumAmpDB(50)
+        disposable = CompositeDisposable()
+        val spectrumData = Recorder().getSpectrumAmpDB(50)
                 .subscribe({
                     spectrumDataSubject.onNext(it)
                 }, {
                     Log.e("SvalkerService", "getSpectrumAmpDB", it)
                 })
+        val signalChecker = spectrumDataSubject
+                .toSignal()
+                .subscribe {
+                    Log.d("SvalkerService", "Emitted signal: $it")
+                }
+
+        disposable = CompositeDisposable(spectrumData, signalChecker)
         super.onCreate()
     }
 
     override fun onDestroy() {
-        Log.d("Service", "Service is destroyed")
         notificationController.onDestroy()
         disposable.dispose()
         super.onDestroy()

@@ -32,7 +32,7 @@ class DummySpectrumView @JvmOverloads constructor(
         data?.amplitudeArray?.let {
             val maxPosition = it.maxPosition()
             val maxDB = it[maxPosition]
-            Log.d("ShowMeView", "Length: ${it.size}, max value: $maxDB at position $maxPosition, with frequency: ${data?.maxFrequency} Gz")
+            Log.d("ShowMeView", "Length: ${it.size}, max value: $maxDB at position $maxPosition, with frequency: ${data?.maxAmpFreq} Gz")
             for (i in 0 until canvas.width) {
                 if (i < it.size - 1) {
                     val dotToDraw = it[i]
