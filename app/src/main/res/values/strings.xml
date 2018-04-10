@@ -6,6 +6,11 @@
     <string name="zombie">Зомби</string>
     <string name="health">Здоровье</string>
     <string name="radiation">Радиация</string>
+    <string name="radiation1">Радиация 1</string>
+    <string name="radiation2">Радиация 2</string>
+    <string name="radiation3">Радиация 3</string>
+    <string name="radiation4">Радиация 4</string>
+    <string name="radiation5">Радиация 5</string>
     <string name="last_received_signal">Последний полученный сигнал: </string>
     <string name="radiation_spot">радиационное пятно</string>
     <string name="electra">электра</string>

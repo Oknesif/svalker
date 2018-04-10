@@ -26,11 +26,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:textSize="20sp" />
-
-        <!--<com.zzzombiecoder.svalker.views.DummySpectrumView-->
-        <!--android:id="@+id/show_me_view"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="200dp" />-->
     </LinearLayout>
 
     <android.support.design.widget.NavigationView

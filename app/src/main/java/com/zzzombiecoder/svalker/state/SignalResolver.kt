@@ -1,31 +1,50 @@
 package com.zzzombiecoder.svalker.state
 
-import android.os.SystemClock
 import com.zzzombiecoder.svalker.spectrum.analysis.SpectrumData
+import com.zzzombiecoder.svalker.state.effects.IEffectSequence
+import com.zzzombiecoder.svalker.state.effects.NoneEffectSequence
 import io.reactivex.Observable
 import io.reactivex.ObservableSource
 import io.reactivex.ObservableTransformer
 
-fun Observable<SpectrumData>.toSignal(): Observable<Signal> {
+fun Observable<SpectrumData>.toSignalType(): Observable<SignalType> {
+    return this.map {
+        if (isLoudEnough(it)) getSignal(it) else SignalType.None
+    }
+}
+
+private fun isLoudEnough(spectrumData: SpectrumData): Boolean =
+        spectrumData.amplitudeArray.max() ?: Double.MIN_VALUE > MIN_DB
+
+private fun getSignal(spectrumData: SpectrumData): SignalType {
+    for (signal in SignalType.values()) {
+        val frequencyRange = SignalsByFrequency[signal]
+        if (frequencyRange!!.isIn(spectrumData.maxAmpFreq)) {
+            return signal
+        }
+    }
+    return SignalType.None
+}
+
+fun Observable<SignalType>.toEffects(): Observable<Effect> {
     return this.compose(SpectrumAnalyser())
 }
 
-private class SpectrumAnalyser : ObservableTransformer<SpectrumData, Signal> {
-    override fun apply(upstream: Observable<SpectrumData>): ObservableSource<Signal> {
-        var firstInSequence: Pair<Signal, Long> = emptyRecord()
+private class SpectrumAnalyser : ObservableTransformer<SignalType, Effect> {
+    override fun apply(upstream: Observable<SignalType>): ObservableSource<Effect> {
+        var firstInSequence: SignalType = SignalType.None
+        var effectSequence: IEffectSequence = NoneEffectSequence()
 
-        return Observable.create<Signal> { emitter ->
+        return Observable.create<Effect> { emitter ->
             val disposable = upstream.subscribe({
-                val timeStamp = SystemClock.uptimeMillis()
-                val signal: Signal = if (isLoudEnough(it)) getSignal(it) else Signal.None
-                val (recodedSignal, recodedTimeStamp) = firstInSequence
-                if (recodedSignal == signal) {
-                    if ((timeStamp - recodedTimeStamp) >= signal.timePeriodMls) {
-                        firstInSequence = emptyRecord()
-                        emitter.onNext(signal)
+                if (firstInSequence == it) {
+                    val effect = effectSequence.registerSignal()
+                    effect?.let {
+                        emitter.onNext(it)
                     }
                 } else {
-                    firstInSequence = Pair(signal, timeStamp)
+                    firstInSequence = it
+                    effectSequence = getEffectSequenceBySignal(it)
                 }
             }, {
                 emitter.onError(it)
@@ -37,18 +56,4 @@ private class SpectrumAnalyser : ObservableTransformer<SpectrumData, Signal> {
             }
         }
     }
-
-    private fun isLoudEnough(spectrumData: SpectrumData): Boolean =
-            spectrumData.amplitudeArray.max() ?: Double.MIN_VALUE > MIN_DB
-
-    private fun getSignal(spectrumData: SpectrumData): Signal {
-        for (signal in Signal.values()) {
-            if (signal.frequencyRange.isIn(spectrumData.maxAmpFreq)) {
-                return signal
-            }
-        }
-        return Signal.None
-    }
-
-    private fun emptyRecord(): Pair<Signal, Long> = Pair(Signal.None, 0L)
 }

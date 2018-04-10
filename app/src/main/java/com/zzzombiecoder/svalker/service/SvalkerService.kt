@@ -24,7 +24,7 @@ class SvalkerService : Service() {
 
     private val stateSubject: Subject<State> = BehaviorSubject.create()
     private val spectrumDataSubject: Subject<SpectrumData> = BehaviorSubject.create()
-    private val signalSubject: Subject<Signal> = BehaviorSubject.create()
+    private val signalSubject: Subject<SignalType> = BehaviorSubject.create()
     private val commandSubject: Subject<Command> = BehaviorSubject.create()
 
     private lateinit var disposable: CompositeDisposable
@@ -44,7 +44,7 @@ class SvalkerService : Service() {
                 return spectrumDataSubject
             }
 
-            override fun getSignal(): Observable<Signal> {
+            override fun getSignal(): Observable<SignalType> {
                 return signalSubject.observeOn(AndroidSchedulers.mainThread())
             }
         }
@@ -52,20 +52,24 @@ class SvalkerService : Service() {
 
     override fun onCreate() {
         stateSubject.onNext(State.Normal())
-        notificationController.onCreate()
+        startForeground(NOTIFICATION_ID.hashCode(), notificationController.createNotification())
         disposable = CompositeDisposable()
         val spectrumData = Recorder().getSpectrumAmpDB(50)
                 .subscribe({
+                    Log.d("SvalkerRecorder", "Length: ${it.amplitudeArray.size}, max value: ${it.maxAmpDB}, with frequency: ${it.maxAmpFreq} Gz")
                     spectrumDataSubject.onNext(it)
                 }, {
                     Log.e("SvalkerService", "getSpectrumAmpDB", it)
                 })
         val life = Observable.interval(1, TimeUnit.SECONDS)
-                .map { Life() }
+                .map { LifeEffect() }
         val signals = spectrumDataSubject
-                .toSignal()
+                .toSignalType()
+                .doOnNext {
+                    Log.d("SignalRecognition", it.toString())
+                }
                 .subscribe { signalSubject.onNext(it) }
-        val signalEffects = signalSubject.map { it.toEffect() }
+        val signalEffects = signalSubject.toEffects()
         val commands = commandSubject.map { it.toEffect() }
         val effects = Observable.merge(life, signalEffects, commands)
         val stateChanges = effects.scan(State.Normal() as State) { state, effect ->
@@ -79,7 +83,6 @@ class SvalkerService : Service() {
     }
 
     override fun onDestroy() {
-        notificationController.onDestroy()
         disposable.dispose()
         super.onDestroy()
     }

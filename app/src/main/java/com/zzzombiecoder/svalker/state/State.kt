@@ -7,7 +7,7 @@ sealed class State {
             val radiationLevel: Double = 0.0
     ) : State()
 
-    class Zombied : State()
+    open class Dead(val timeToRespawnSeconds: Long = TIME_IN_GRAVEYARD) : State()
 
-    class Dead(val timeToRespawnSeconds: Long = TIME_IN_GRAVEYARD) : State()
+    class Zombied : Dead()
 }

@@ -13,30 +13,24 @@ private fun State.Normal.calculateStateByHp(hp: Double): State {
     }
 }
 
-class Revive : Effect {
+class ReviveEffect : Effect {
     override fun apply(state: State): State {
         return State.Normal()
     }
 
 }
 
-class Death : Effect {
+class DeathEffect : Effect {
     override fun apply(state: State): State {
         return State.Dead()
     }
 
 }
 
-class None : Effect {
-    override fun apply(state: State): State {
-        return state
-    }
-}
-
-class Electra : Effect {
+class ReduceHealthEffect(private val reducingPoints: Double) : Effect {
     override fun apply(state: State): State {
         return if (state is State.Normal) {
-            state.calculateStateByHp(state.healthPoints - 30)
+            state.calculateStateByHp(state.healthPoints - reducingPoints)
         } else {
             state
         }
@@ -44,23 +38,27 @@ class Electra : Effect {
 
 }
 
-class RadiationSpot : Effect {
-
-    private val additionRadiationLevel = 3L
+class RadiationSpotEffect(private val addedPoints: Double) : Effect {
 
     override fun apply(state: State): State {
         return if (state is State.Normal) {
-            state.copy(radiationLevel = state.radiationLevel + additionRadiationLevel)
+            val newRadiationLevel = state.radiationLevel + addedPoints
+            val radiation = if (newRadiationLevel > MAX_RADIATION) {
+                MAX_RADIATION
+            } else {
+                newRadiationLevel
+            }
+            state.copy(radiationLevel = radiation)
         } else {
             state
         }
     }
 }
 
-class Life : Effect {
+class LifeEffect : Effect {
 
     private val radiationHpCoff = 0.3
-    private val hpRegen = 0.014
+    private val hpRegen = 0.03
 
     override fun apply(state: State): State {
         return if (state is State.Normal) {
@@ -74,7 +72,7 @@ class Life : Effect {
     }
 }
 
-class Graveyard : Effect {
+class GraveyardEffect : Effect {
     override fun apply(state: State): State {
         return if (state is State.Dead) {
             val timeToRespawnLeft = state.timeToRespawnSeconds - 1

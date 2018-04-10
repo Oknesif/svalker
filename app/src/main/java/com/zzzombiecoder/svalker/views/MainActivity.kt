@@ -19,7 +19,7 @@ import com.zzzombiecoder.svalker.R
 import com.zzzombiecoder.svalker.service.ServiceBinder
 import com.zzzombiecoder.svalker.service.SvalkerService
 import com.zzzombiecoder.svalker.state.Command
-import com.zzzombiecoder.svalker.state.Signal
+import com.zzzombiecoder.svalker.state.SignalType
 import com.zzzombiecoder.svalker.state.State
 import com.zzzombiecoder.svalker.utils.plusAssign
 import io.reactivex.disposables.CompositeDisposable
@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
         override fun onServiceConnected(name: ComponentName?, service: IBinder) {
             disposable += (service as ServiceBinder)
                     .getSignal()
-                    .startWith(Signal.None)
+                    .startWith(SignalType.None)
                     .subscribe {
                         updateSignalInfo(it)
                     }
@@ -92,19 +92,27 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateSignalInfo(signal: Signal) {
+    private fun updateSignalInfo(signal: SignalType) {
         val signalTitle = getString(R.string.last_received_signal)
         val signalColor = when (signal) {
-            Signal.None -> Color.WHITE
-            Signal.Radiation -> Color.YELLOW
-            Signal.Graveyard -> Color.GREEN
-            Signal.Electra -> Color.BLUE
+            SignalType.None -> Color.WHITE
+            SignalType.Radiation1 -> Color.YELLOW
+            SignalType.Radiation2 -> Color.YELLOW
+            SignalType.Radiation3 -> Color.YELLOW
+            SignalType.Radiation4 -> Color.YELLOW
+            SignalType.Radiation5 -> Color.YELLOW
+            SignalType.Graveyard -> Color.GREEN
+            SignalType.Electra -> Color.BLUE
         }
         val signalText = when (signal) {
-            Signal.None -> getString(R.string.none)
-            Signal.Radiation -> getString(R.string.radiation)
-            Signal.Graveyard -> getString(R.string.graveyard)
-            Signal.Electra -> getString(R.string.electra)
+            SignalType.None -> getString(R.string.none)
+            SignalType.Radiation1 -> getString(R.string.radiation1)
+            SignalType.Radiation2 -> getString(R.string.radiation2)
+            SignalType.Radiation3 -> getString(R.string.radiation3)
+            SignalType.Radiation4 -> getString(R.string.radiation4)
+            SignalType.Radiation5 -> getString(R.string.radiation5)
+            SignalType.Graveyard -> getString(R.string.graveyard)
+            SignalType.Electra -> getString(R.string.electra)
         }
         signalView.text = buildSpannedString {
             append(signalTitle)

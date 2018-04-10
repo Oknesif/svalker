@@ -3,10 +3,10 @@ package com.zzzombiecoder.svalker.state
 fun Command.toEffect(): Effect {
     return when (this) {
         Command.REVIVE -> {
-            Revive()
+            ReviveEffect()
         }
         Command.DIE -> {
-            Death()
+            DeathEffect()
         }
     }
 }
