@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">CodeGenApp</string>
+    <string name="vodka">Водка</string>
+    <string name="heal">Бинт</string>
+    <string name="anti_rad">Антирад</string>
+    <string name="psi_block">Псиблокада</string>
+    <string name="enable_receiver">активировать\nприемник</string>
+    <string name="disable_receiver">деактивировать\nприемник</string>
+</resources>

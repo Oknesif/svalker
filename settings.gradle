@@ -1,1 +1,1 @@
-include ':app'
+include ':SvalkerApp', ':CodeGenerator', ':codegenapp'
