@@ -1,8 +1,9 @@
 package com.zzzombiecoder.svalker.state
 
 import com.zzzombiecoder.svalker.spectrum.analysis.SpectrumData
-import com.zzzombiecoder.svalker.state.effects.IEffectSequence
-import com.zzzombiecoder.svalker.state.effects.NoneEffectSequence
+import com.zzzombiecoder.svalker.state.effects.Effect
+import com.zzzombiecoder.svalker.state.effects.sequences.IEffectSequence
+import com.zzzombiecoder.svalker.state.effects.sequences.NoneEffectSequence
 import io.reactivex.Observable
 import io.reactivex.ObservableSource
 import io.reactivex.ObservableTransformer

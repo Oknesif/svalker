@@ -10,6 +10,7 @@ import android.util.Log
 import com.zzzombiecoder.svalker.spectrum.analysis.Recorder
 import com.zzzombiecoder.svalker.spectrum.analysis.SpectrumData
 import com.zzzombiecoder.svalker.state.*
+import com.zzzombiecoder.svalker.state.effects.LifeEffect
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -39,11 +40,6 @@ class SvalkerService : Service() {
                 return stateSubject.observeOn(AndroidSchedulers.mainThread())
             }
 
-            override fun getSpectrumData(): Observable<SpectrumData> {
-                Log.d("Service", "getSpectrumData")
-                return spectrumDataSubject
-            }
-
             override fun getSignal(): Observable<SignalType> {
                 return signalSubject.observeOn(AndroidSchedulers.mainThread())
             }
@@ -51,35 +47,38 @@ class SvalkerService : Service() {
     }
 
     override fun onCreate() {
-        stateSubject.onNext(State.Normal())
         startForeground(NOTIFICATION_ID.hashCode(), notificationController.createNotification())
+
         disposable = CompositeDisposable()
+
+        val life = Observable.interval(1, TimeUnit.SECONDS)
+                .map { LifeEffect() }
         val spectrumData = Recorder().getSpectrumAmpDB(50)
                 .subscribe({
-                    Log.d("SvalkerRecorder", "Length: ${it.amplitudeArray.size}, max value: ${it.maxAmpDB}, with frequency: ${it.maxAmpFreq} Gz")
                     spectrumDataSubject.onNext(it)
                 }, {
                     Log.e("SvalkerService", "getSpectrumAmpDB", it)
                 })
-        val life = Observable.interval(1, TimeUnit.SECONDS)
-                .map { LifeEffect() }
         val signals = spectrumDataSubject
                 .toSignalType()
-                .doOnNext {
-                    Log.d("SignalRecognition", it.toString())
-                }
                 .subscribe { signalSubject.onNext(it) }
         val signalEffects = signalSubject.toEffects()
         val commands = commandSubject.map { it.toEffect() }
         val effects = Observable.merge(life, signalEffects, commands)
-        val stateChanges = effects.scan(State.Normal() as State) { state, effect ->
-            effect.apply(state)
-        }.subscribe {
-            stateSubject.onNext(it)
-        }
+
+        val stateChanges = effects
+                .scan(getInitialState()) { state, effect ->
+                    effect.apply(state)
+                }.subscribe {
+                    stateSubject.onNext(it)
+                }
 
         disposable = CompositeDisposable(spectrumData, stateChanges, signals)
         super.onCreate()
+    }
+
+    private fun getInitialState(): State {
+        return State.NotInGame()
     }
 
     override fun onDestroy() {

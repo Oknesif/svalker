@@ -1,7 +1,7 @@
-package com.zzzombiecoder.svalker.state.effects
+package com.zzzombiecoder.svalker.state.effects.sequences
 
 import android.os.SystemClock
-import com.zzzombiecoder.svalker.state.Effect
+import com.zzzombiecoder.svalker.state.effects.Effect
 import java.util.concurrent.TimeUnit
 
 class EffectSequence(

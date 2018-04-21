@@ -4,6 +4,7 @@
     <string name="normal">Нормальный</string>
     <string name="dead">Мертв</string>
     <string name="zombie">Зомби</string>
+    <string name="not_in_game">Не в игре</string>
     <string name="health">Здоровье</string>
     <string name="radiation">Радиация</string>
     <string name="radiation1">Радиация 1</string>

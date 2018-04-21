@@ -103,6 +103,10 @@ class MainActivity : AppCompatActivity() {
             SignalType.Radiation5 -> Color.YELLOW
             SignalType.Graveyard -> Color.GREEN
             SignalType.Electra -> Color.BLUE
+            SignalType.Studen -> Color.GREEN
+            SignalType.Inferno -> Color.RED
+            SignalType.psy_emmiter -> Color.CYAN
+            SignalType.psy_controller -> Color.CYAN
         }
         val signalText = when (signal) {
             SignalType.None -> getString(R.string.none)
@@ -113,6 +117,10 @@ class MainActivity : AppCompatActivity() {
             SignalType.Radiation5 -> getString(R.string.radiation5)
             SignalType.Graveyard -> getString(R.string.graveyard)
             SignalType.Electra -> getString(R.string.electra)
+            SignalType.Studen -> "студень"
+            SignalType.Inferno -> "жарка"
+            SignalType.psy_emmiter -> "пси излучатель"
+            SignalType.psy_controller -> "контроллер"
         }
         signalView.text = buildSpannedString {
             append(signalTitle)
@@ -127,8 +135,10 @@ class MainActivity : AppCompatActivity() {
         val healthTitle = getString(R.string.health)
         val radiationTitle = getString(R.string.radiation)
         val stateString = when (state) {
+            is State.NotInGame -> getString(R.string.not_in_game)
             is State.Normal -> getString(R.string.normal)
             is State.Dead -> getString(R.string.dead)
+            is State.Zombie -> getString(R.string.zombie)
         }
         stateView.text = buildSpannedString {
             bold { append("$stateTitle: ") }
@@ -136,10 +146,10 @@ class MainActivity : AppCompatActivity() {
             append("\n")
             if (state is State.Normal) {
                 bold { append("$healthTitle: ") }
-                append(state.healthPoints.toInt().toString())
+                append(state.health.toInt().toString())
                 append("\n")
                 bold { append("$radiationTitle: ") }
-                append(state.radiationLevel.toString())
+                append(state.radiation.toString())
                 append("\n")
             }
             if (state is State.Dead) {

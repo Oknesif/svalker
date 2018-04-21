@@ -22,7 +22,10 @@ android {
 }
 
 dependencies {
+    implementation project(":CodeGenerator")
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support:design:27.1.1'
 
@@ -32,8 +35,6 @@ dependencies {
     implementation 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.5@aar'
 
     implementation 'androidx.core:core-ktx:0.3'
-
-    implementation project(":CodeGenerator")
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'

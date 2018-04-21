@@ -1,8 +1,9 @@
 package com.zzzombiecoder.svalker.state
 
-import com.zzzombiecoder.svalker.state.effects.EffectSequence
-import com.zzzombiecoder.svalker.state.effects.IEffectSequence
-import com.zzzombiecoder.svalker.state.effects.NoneEffectSequence
+import com.zzzombiecoder.svalker.state.effects.*
+import com.zzzombiecoder.svalker.state.effects.sequences.EffectSequence
+import com.zzzombiecoder.svalker.state.effects.sequences.IEffectSequence
+import com.zzzombiecoder.svalker.state.effects.sequences.NoneEffectSequence
 import java.util.concurrent.TimeUnit
 
 enum class SignalType {
@@ -13,6 +14,10 @@ enum class SignalType {
     Radiation3,
     Radiation4,
     Radiation5,
+    Studen,
+    Inferno,
+    psy_emmiter,
+    psy_controller,
     None
 }
 
@@ -20,6 +25,18 @@ object SignalsByFrequency : HashMap<SignalType, FrequencyRange>() {
     init {
         for (signalType in SignalType.values()) {
             val frequencyRange: FrequencyRange = when (signalType) {
+                SignalType.psy_emmiter -> {
+                    FrequencyRange(70.0, 110.0)
+                }
+                SignalType.psy_controller -> {
+                    FrequencyRange(130.0, 150.0)
+                }
+                SignalType.Inferno -> {
+                    FrequencyRange(370.0, 410.0)
+                }
+                SignalType.Studen -> {
+                    FrequencyRange(280.0, 320.0)
+                }
                 SignalType.Electra -> {
                     FrequencyRange(228.0, 250.0)
                 }
@@ -55,8 +72,22 @@ fun getEffectSequenceBySignal(signalType: SignalType): IEffectSequence {
         SignalType.None -> {
             NoneEffectSequence()
         }
+        SignalType.psy_emmiter -> {
+            EffectSequence(PsyEmitterEffect(), 1L, TimeUnit.SECONDS)
+        }
+        SignalType.psy_controller -> {
+            EffectSequence(PsyControllerEffect(), 1L, TimeUnit.SECONDS)
+        }
         SignalType.Graveyard -> {
             EffectSequence(GraveyardEffect(), 1L, TimeUnit.SECONDS)
+        }
+        SignalType.Inferno -> {
+            EffectSequence(ReduceHealthEffect(20.0), 1L, TimeUnit.SECONDS)
+        }
+        SignalType.Studen -> {
+            val periods = LongArray(30) { 1000L }
+            val effect = Array<Effect>(30) { ReduceHealthEffect(it * 5.0 + 5.0) }
+            EffectSequence(periods, effect)
         }
         SignalType.Electra -> {
             val periods: LongArray = longArrayOf(500L, 500L, 500L, 500L)
