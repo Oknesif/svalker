@@ -6,7 +6,6 @@ import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
-import com.crashlytics.android.Crashlytics
 import com.zzzombiecoder.svalker.spectrum.analysis.Recorder
 import com.zzzombiecoder.svalker.spectrum.analysis.SpectrumData
 import com.zzzombiecoder.svalker.state.*
@@ -21,6 +20,8 @@ import java.util.concurrent.TimeUnit
 
 
 class SvalkerService : Service() {
+    private val vibrationController: VibrationController
+            by lazy { VibrationController(applicationContext) }
     private val notificationController: NotificationController
             by lazy { NotificationController(this) }
 
@@ -74,6 +75,7 @@ class SvalkerService : Service() {
                     stateSubject.onNext(it)
                 }
 
+        vibrationController.subscribe(signalSubject)
         disposable = CompositeDisposable(spectrumData, stateChanges, signals)
         super.onCreate()
     }
@@ -84,6 +86,7 @@ class SvalkerService : Service() {
 
     override fun onDestroy() {
         disposable.dispose()
+        vibrationController.unsubscribe()
         super.onDestroy()
     }
 }

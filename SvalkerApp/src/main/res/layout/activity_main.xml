@@ -8,6 +8,13 @@
     android:fitsSystemWindows="true"
     tools:context="com.zzzombiecoder.svalker.views.MainActivity">
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include layout="@layout/main_layout" />
+    </FrameLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -28,43 +35,5 @@
             android:textSize="20sp" />
     </LinearLayout>
 
-    <android.support.design.widget.NavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="200dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="?android:attr/actionBarSize"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <Button
-                android:id="@+id/stop_service_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Выйти из программы" />
-
-            <Button
-                android:id="@+id/die_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Умереть" />
-
-            <Button
-                android:id="@+id/revive_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Возродиться" />
-
-            <Button
-                android:id="@+id/scanner_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Сканер кодов" />
-        </LinearLayout>
-    </android.support.design.widget.NavigationView>
-
+    <include layout="@layout/navigation_layout" />
 </android.support.v4.widget.DrawerLayout>

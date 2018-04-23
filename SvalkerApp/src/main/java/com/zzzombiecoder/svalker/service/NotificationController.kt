@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.support.v4.app.NotificationCompat
-import android.support.v4.app.NotificationManagerCompat
 import com.zzzombiecoder.svalker.R
 import com.zzzombiecoder.svalker.views.MainActivity
 
@@ -21,9 +20,9 @@ class NotificationController(private val service: Service) {
         val intent = Intent(service, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(service, 0, intent, 0)
 
-        return NotificationCompat.Builder(service, "STALKER")
-                .setSmallIcon(R.drawable.ic_sentiment)
-                .setContentText(service.baseContext.getString(R.string.app_name))
+        return NotificationCompat.Builder(service, CHANNEL_ID)
+                .setSmallIcon(R.drawable.radiation)
+                .setContentText(service.applicationContext.getString(R.string.app_name))
                 .setPriority(NotificationCompat.PRIORITY_MIN)
                 .setContentIntent(pendingIntent)
                 .setChannelId(CHANNEL_ID)

@@ -8,16 +8,16 @@ import java.util.concurrent.TimeUnit
 
 enum class SignalType {
     Electra,
+    Studen,
+    Inferno,
+    Psy_emmiter,
+    Psy_controller,
     Graveyard,
     Radiation1,
     Radiation2,
     Radiation3,
     Radiation4,
     Radiation5,
-    Studen,
-    Inferno,
-    psy_emmiter,
-    psy_controller,
     None
 }
 
@@ -25,10 +25,10 @@ object SignalsByFrequency : HashMap<SignalType, FrequencyRange>() {
     init {
         for (signalType in SignalType.values()) {
             val frequencyRange: FrequencyRange = when (signalType) {
-                SignalType.psy_emmiter -> {
+                SignalType.Psy_emmiter -> {
                     FrequencyRange(70.0, 110.0)
                 }
-                SignalType.psy_controller -> {
+                SignalType.Psy_controller -> {
                     FrequencyRange(130.0, 150.0)
                 }
                 SignalType.Inferno -> {
@@ -72,10 +72,10 @@ fun getEffectSequenceBySignal(signalType: SignalType): IEffectSequence {
         SignalType.None -> {
             NoneEffectSequence()
         }
-        SignalType.psy_emmiter -> {
+        SignalType.Psy_emmiter -> {
             EffectSequence(PsyEmitterEffect(), 1L, TimeUnit.SECONDS)
         }
-        SignalType.psy_controller -> {
+        SignalType.Psy_controller -> {
             EffectSequence(PsyControllerEffect(), 1L, TimeUnit.SECONDS)
         }
         SignalType.Graveyard -> {

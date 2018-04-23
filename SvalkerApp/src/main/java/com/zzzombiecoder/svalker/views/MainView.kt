@@ -1,7 +1,9 @@
 package com.zzzombiecoder.svalker.views
 
 import android.app.Activity
+import android.content.Context
 import android.graphics.Color
+import android.os.Vibrator
 import android.widget.TextView
 import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
@@ -26,6 +28,7 @@ class MainView(
     private val signalView: TextView = activity.findViewById(R.id.signal_txt)
 
     override fun updateUserState(state: State) {
+
         val graveyardTime = activity.getString(R.string.graveyard_time)
         val stateTitle = activity.getString(R.string.state)
         val healthTitle = activity.getString(R.string.health)
@@ -71,8 +74,8 @@ class MainView(
             SignalType.Electra -> Color.BLUE
             SignalType.Studen -> Color.GREEN
             SignalType.Inferno -> Color.RED
-            SignalType.psy_emmiter -> Color.CYAN
-            SignalType.psy_controller -> Color.CYAN
+            SignalType.Psy_emmiter -> Color.CYAN
+            SignalType.Psy_controller -> Color.CYAN
         }
         val signalText = when (signal) {
             SignalType.None -> activity.getString(R.string.none)
@@ -85,8 +88,8 @@ class MainView(
             SignalType.Electra -> activity.getString(R.string.electra)
             SignalType.Studen -> "студень"
             SignalType.Inferno -> "жарка"
-            SignalType.psy_emmiter -> "пси излучатель"
-            SignalType.psy_controller -> "контроллер"
+            SignalType.Psy_emmiter -> "пси излучатель"
+            SignalType.Psy_controller -> "контроллер"
         }
         signalView.text = buildSpannedString {
             append(signalTitle)
