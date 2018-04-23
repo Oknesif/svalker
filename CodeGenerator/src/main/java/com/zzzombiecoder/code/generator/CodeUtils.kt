@@ -8,6 +8,19 @@ fun Char.generateCode(
     return this.toIntCode().toCode(random)
 }
 
+fun String.getCode(): Code? {
+    if (this.isCorrectCode()) {
+        val char = this[1]
+        for (code in Code.values()) {
+            if (code.char == char) {
+                return code
+            }
+        }
+
+    }
+    return null
+}
+
 fun String.isCorrectCode(): Boolean {
     val charArray = this.toCharArray()
     return if (charArray.size == 6) {

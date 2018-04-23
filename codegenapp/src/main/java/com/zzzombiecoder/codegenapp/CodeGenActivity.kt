@@ -23,7 +23,7 @@ class CodeGenActivity : AppCompatActivity() {
         findViewById<View>(R.id.vodka_button).setClickListener(Code.VODKA)
         findViewById<View>(R.id.heal_button).setClickListener(Code.HEAL)
         findViewById<View>(R.id.antirad_button).setClickListener(Code.ANTI_RAD)
-        findViewById<View>(R.id.psi_button).setClickListener(Code.PSI_BLOCK)
+        findViewById<View>(R.id.psi_button).setClickListener(Code.PSY_BLOCK)
         findViewById<View>(R.id.enable_button).setClickListener(Code.ACTIVATE_RECEIVER)
         findViewById<View>(R.id.disable_button).setClickListener(Code.DEACTIVATE_RECEIVER)
 

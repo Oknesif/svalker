@@ -6,7 +6,7 @@ enum class Code(
     VODKA('v'),
     HEAL('h'),
     ANTI_RAD('r'),
-    PSI_BLOCK('p'),
+    PSY_BLOCK('p'),
     ACTIVATE_RECEIVER('a'),
-    DEACTIVATE_RECEIVER('d')
+    DEACTIVATE_RECEIVER('d');
 }

@@ -14,13 +14,17 @@ import android.widget.TextView
 import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
 import androidx.core.text.color
+import androidx.core.widget.toast
+import com.google.zxing.integration.android.IntentIntegrator
 import com.tbruyelle.rxpermissions2.RxPermissions
+import com.zzzombiecoder.code.generator.getCode
 import com.zzzombiecoder.svalker.R
 import com.zzzombiecoder.svalker.service.ServiceBinder
 import com.zzzombiecoder.svalker.service.SvalkerService
 import com.zzzombiecoder.svalker.state.Command
 import com.zzzombiecoder.svalker.state.SignalType
 import com.zzzombiecoder.svalker.state.State
+import com.zzzombiecoder.svalker.state.toCommand
 import com.zzzombiecoder.svalker.utils.plusAssign
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
@@ -31,8 +35,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var stateView: TextView
     private lateinit var signalView: TextView
     private lateinit var stopServiceButton: View
-    private lateinit var dieButton: View
-    private lateinit var reviveButton: View
     private lateinit var disposable: CompositeDisposable
     private val commandSubject: Subject<Command> = PublishSubject.create()
 
@@ -47,6 +49,29 @@ class MainActivity : AppCompatActivity() {
         stopServiceButton.setOnClickListener { stopService(serviceIntent) }
         findViewById<View>(R.id.die_button).setOnClickListener { commandSubject.onNext(Command.DIE) }
         findViewById<View>(R.id.revive_button).setOnClickListener { commandSubject.onNext(Command.REVIVE) }
+
+        findViewById<View>(R.id.scanner_button).setOnClickListener {
+            IntentIntegrator(this).initiateScan()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+        if (result != null) {
+            if (result.contents != null) {
+                val codeString = result.contents
+                val code = codeString.getCode()
+                if (code == null) {
+                    this.toast("incorrect")
+                } else {
+                    commandSubject.onNext(code.toCommand())
+                }
+            } else {
+                toast("canceled")
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     override fun onStart() {
