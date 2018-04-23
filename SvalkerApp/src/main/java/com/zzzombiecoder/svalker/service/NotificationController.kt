@@ -23,7 +23,7 @@ class NotificationController(private val service: Service) {
 
         return NotificationCompat.Builder(service, "STALKER")
                 .setSmallIcon(R.drawable.ic_sentiment)
-                .setContentText("КПК Зона")
+                .setContentText(service.baseContext.getString(R.string.app_name))
                 .setPriority(NotificationCompat.PRIORITY_MIN)
                 .setContentIntent(pendingIntent)
                 .setChannelId(CHANNEL_ID)

@@ -4,16 +4,10 @@ import android.Manifest
 import android.content.ComponentName
 import android.content.Intent
 import android.content.ServiceConnection
-import android.graphics.Color
 import android.os.Bundle
 import android.os.IBinder
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.View
-import android.widget.TextView
-import androidx.core.text.bold
-import androidx.core.text.buildSpannedString
-import androidx.core.text.color
 import androidx.core.widget.toast
 import com.google.zxing.integration.android.IntentIntegrator
 import com.tbruyelle.rxpermissions2.RxPermissions
@@ -23,19 +17,18 @@ import com.zzzombiecoder.svalker.service.ServiceBinder
 import com.zzzombiecoder.svalker.service.SvalkerService
 import com.zzzombiecoder.svalker.state.Command
 import com.zzzombiecoder.svalker.state.SignalType
-import com.zzzombiecoder.svalker.state.State
 import com.zzzombiecoder.svalker.state.toCommand
 import com.zzzombiecoder.svalker.utils.plusAssign
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var stateView: TextView
-    private lateinit var signalView: TextView
-    private lateinit var stopServiceButton: View
+    private lateinit var mainView: IMainView
     private lateinit var disposable: CompositeDisposable
+
     private val commandSubject: Subject<Command> = PublishSubject.create()
 
     private val serviceIntent: Intent by lazy { Intent(this, SvalkerService::class.java) }
@@ -43,15 +36,17 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        stateView = findViewById(R.id.state_txt)
-        signalView = findViewById(R.id.signal_txt)
-        stopServiceButton = findViewById(R.id.stop_service_button)
-        stopServiceButton.setOnClickListener { stopService(serviceIntent) }
+        mainView = MainView(this)
+
+        findViewById<View>(R.id.stop_service_button).setOnClickListener { stopService(serviceIntent) }
         findViewById<View>(R.id.die_button).setOnClickListener { commandSubject.onNext(Command.DIE) }
         findViewById<View>(R.id.revive_button).setOnClickListener { commandSubject.onNext(Command.REVIVE) }
-
         findViewById<View>(R.id.scanner_button).setOnClickListener {
-            IntentIntegrator(this).initiateScan()
+            val integrator = IntentIntegrator(this)
+            integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
+            integrator.setPrompt(getString(R.string.message_to_scan))
+            integrator.setOrientationLocked(false)
+            integrator.initiateScan()
         }
     }
 
@@ -83,9 +78,11 @@ class MainActivity : AppCompatActivity() {
                     if (it) {
                         startService(serviceIntent)
                         bindService(serviceIntent, serviceConnection, 0)
+                    } else {
+                        finish()
                     }
                 }, {
-                    Log.d("MainActivity", Log.getStackTraceString(it))
+                    Timber.e(it)
                 })
     }
 
@@ -105,84 +102,15 @@ class MainActivity : AppCompatActivity() {
                     .getSignal()
                     .startWith(SignalType.None)
                     .subscribe {
-                        updateSignalInfo(it)
+                        mainView.updateSignalInfo(it)
                     }
             disposable += (service as ServiceBinder)
                     .getStateUpdates()
                     .subscribe {
-                        updateUserState(it)
+                        mainView.updateUserState(it)
                     }
 
             (service as ServiceBinder).setCommandSource(commandSubject)
         }
-    }
-
-    private fun updateSignalInfo(signal: SignalType) {
-        val signalTitle = getString(R.string.last_received_signal)
-        val signalColor = when (signal) {
-            SignalType.None -> Color.WHITE
-            SignalType.Radiation1 -> Color.YELLOW
-            SignalType.Radiation2 -> Color.YELLOW
-            SignalType.Radiation3 -> Color.YELLOW
-            SignalType.Radiation4 -> Color.YELLOW
-            SignalType.Radiation5 -> Color.YELLOW
-            SignalType.Graveyard -> Color.GREEN
-            SignalType.Electra -> Color.BLUE
-            SignalType.Studen -> Color.GREEN
-            SignalType.Inferno -> Color.RED
-            SignalType.psy_emmiter -> Color.CYAN
-            SignalType.psy_controller -> Color.CYAN
-        }
-        val signalText = when (signal) {
-            SignalType.None -> getString(R.string.none)
-            SignalType.Radiation1 -> getString(R.string.radiation1)
-            SignalType.Radiation2 -> getString(R.string.radiation2)
-            SignalType.Radiation3 -> getString(R.string.radiation3)
-            SignalType.Radiation4 -> getString(R.string.radiation4)
-            SignalType.Radiation5 -> getString(R.string.radiation5)
-            SignalType.Graveyard -> getString(R.string.graveyard)
-            SignalType.Electra -> getString(R.string.electra)
-            SignalType.Studen -> "студень"
-            SignalType.Inferno -> "жарка"
-            SignalType.psy_emmiter -> "пси излучатель"
-            SignalType.psy_controller -> "контроллер"
-        }
-        signalView.text = buildSpannedString {
-            append(signalTitle)
-            append("\n")
-            bold { color(signalColor) { append(signalText) } }
-        }
-    }
-
-    private fun updateUserState(state: State) {
-        val graveyardTime = getString(R.string.graveyard_time)
-        val stateTitle = getString(R.string.state)
-        val healthTitle = getString(R.string.health)
-        val radiationTitle = getString(R.string.radiation)
-        val stateString = when (state) {
-            is State.NotInGame -> getString(R.string.not_in_game)
-            is State.Normal -> getString(R.string.normal)
-            is State.Dead -> getString(R.string.dead)
-            is State.Zombie -> getString(R.string.zombie)
-        }
-        stateView.text = buildSpannedString {
-            bold { append("$stateTitle: ") }
-            append(stateString)
-            append("\n")
-            if (state is State.Normal) {
-                bold { append("$healthTitle: ") }
-                append(state.health.toInt().toString())
-                append("\n")
-                bold { append("$radiationTitle: ") }
-                append(state.radiation.toString())
-                append("\n")
-            }
-            if (state is State.Dead) {
-                bold { append(graveyardTime) }
-                append("\n")
-                append("Осталось секунд: ${state.timeToRespawnSeconds}")
-            }
-        }
-
     }
 }

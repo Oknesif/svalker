@@ -6,7 +6,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
-import android.util.Log
+import com.crashlytics.android.Crashlytics
 import com.zzzombiecoder.svalker.spectrum.analysis.Recorder
 import com.zzzombiecoder.svalker.spectrum.analysis.SpectrumData
 import com.zzzombiecoder.svalker.state.*
@@ -16,6 +16,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 
@@ -57,7 +58,7 @@ class SvalkerService : Service() {
                 .subscribe({
                     spectrumDataSubject.onNext(it)
                 }, {
-                    Log.e("SvalkerService", "getSpectrumAmpDB", it)
+                    Timber.e(it)
                 })
         val signals = spectrumDataSubject
                 .toSignalType()

@@ -15,12 +15,12 @@
 
 package com.zzzombiecoder.svalker.spectrum.analysis;
 
-import android.util.Log;
+import com.zzzombiecoder.svalker.spectrum.analysis.fft.RealDoubleFFT;
+import com.zzzombiecoder.svalker.spectrum.analysis.fft.besselCal;
 
 import java.util.Arrays;
 
-import com.zzzombiecoder.svalker.spectrum.analysis.fft.RealDoubleFFT;
-import com.zzzombiecoder.svalker.spectrum.analysis.fft.besselCal;
+import timber.log.Timber;
 
 import static java.lang.Math.PI;
 import static java.lang.Math.abs;
@@ -243,12 +243,12 @@ public class STFT {
             if (micGain == null || micGain.length != analyzerParam.micGainDB.length) {
                 micGain = new double[analyzerParam.micGainDB.length];
             }
-            Log.w("STFT:", "calib loaded. micGain.length = " + micGain.length);
+            Timber.w("STFT: calib loaded. micGain.length = %s", micGain.length);
             for (int i = 0; i < micGain.length; i++) {
                 micGain[i] = pow(10, analyzerParam.micGainDB[i] / 10.0);
             }
         } else {
-            Log.w("STFT:", "no calib");
+            Timber.w("STFT: no calib");
         }
     }
 
@@ -258,7 +258,6 @@ public class STFT {
 
     public void feedData(short[] ds, int dsLen) {
         if (dsLen > ds.length) {
-            Log.e("STFT", "dsLen > ds.length !");
             dsLen = ds.length;
         }
         int inLen = spectrumAmpIn.length;

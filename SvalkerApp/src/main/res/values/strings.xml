@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Stalker</string>
+    <string name="app_name">КПК Зона</string>
     <string name="state">Статус</string>
     <string name="normal">Нормальный</string>
     <string name="dead">Мертв</string>
@@ -18,5 +18,6 @@
     <string name="graveyard">могильник</string>
     <string name="none">ничего</string>
     <string name="graveyard_time">Время в мертвяке: </string>
+    <string name="message_to_scan">Наведите центр камеры на QR код</string>
 
 </resources>
