@@ -12,15 +12,25 @@ sealed class State {
             val health: Double = MAX_HEALTH,
             val psy: Double = MAX_PSI,
             val radiation: Double = 0.0,
-            val effectModifiersTime: LongArray = LongArray(EffectModifier.values().size)
+            val effectModifiersLastSeconds: LongArray = LongArray(EffectModifier.values().size)
     ) : State() {
 
         fun setEffectModifierTime(modifier: EffectModifier, seconds: Long) {
-            effectModifiersTime[modifier.ordinal] = seconds
+            effectModifiersLastSeconds[modifier.ordinal] = seconds
         }
 
         fun getEffectModifierTime(modifier: EffectModifier): Long {
-            return effectModifiersTime[modifier.ordinal]
+            return effectModifiersLastSeconds[modifier.ordinal]
+        }
+
+        fun getActiveModifiers(): List<EffectModifier> {
+            val list = mutableListOf<EffectModifier>()
+            for (i in 0 until EffectModifier.values().size) {
+                if (effectModifiersLastSeconds[i] > 0) {
+                    list.add(EffectModifier.values()[i])
+                }
+            }
+            return list
         }
 
     }

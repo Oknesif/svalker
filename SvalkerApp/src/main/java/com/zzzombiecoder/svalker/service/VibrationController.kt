@@ -1,6 +1,8 @@
 package com.zzzombiecoder.svalker.service
 
 import android.content.Context
+import android.os.Build
+import android.os.VibrationEffect
 import android.os.Vibrator
 import com.zzzombiecoder.svalker.state.SignalType
 import io.reactivex.Observable
@@ -8,7 +10,7 @@ import io.reactivex.disposables.Disposable
 
 class VibrationController(context: Context) {
     private val vibrator: Vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-    private var disposable: Disposable? = null
+    var isEnabled: Boolean = false
 
     private val signalsToVibrate: Array<SignalType> = arrayOf(
             SignalType.Electra,
@@ -20,22 +22,20 @@ class VibrationController(context: Context) {
             SignalType.Radiation2,
             SignalType.Radiation3,
             SignalType.Radiation4,
-            SignalType.Radiation5
+            SignalType.Radiation5,
+            SignalType.Unplugged
     )
 
-    fun isEnabled(): Boolean {
-        return true
-    }
-
-    fun subscribe(signalType: Observable<SignalType>) {
-        disposable = signalType.subscribe {
-            if (isEnabled() && signalsToVibrate.contains(it)) {
-                vibrator.vibrate(200)
+    fun subscribe(signalType: Observable<SignalType>): Disposable {
+        return signalType.subscribe {
+            if (isEnabled && vibrator.hasVibrator() && signalsToVibrate.contains(it)) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    val vibrationEffect = VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE)
+                    vibrator.vibrate(vibrationEffect)
+                } else {
+                    vibrator.vibrate(200)
+                }
             }
         }
-    }
-
-    fun unsubscribe() {
-        disposable?.dispose()
     }
 }

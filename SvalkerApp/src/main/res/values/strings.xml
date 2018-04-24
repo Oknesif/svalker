@@ -6,6 +6,8 @@
     <string name="zombie">Зомби</string>
     <string name="not_in_game">Не в игре</string>
     <string name="health">Здоровье</string>
+    <string name="psy_health">Психическое здоровье</string>
+    <string name="effect_modifiers">Эффекты: </string>
     <string name="radiation">Радиация</string>
     <string name="radiation1">Радиация 1</string>
     <string name="radiation2">Радиация 2</string>
@@ -17,6 +19,7 @@
     <string name="electra">электра</string>
     <string name="graveyard">могильник</string>
     <string name="none">ничего</string>
+    <string name="unplugged">отключен приемник</string>
     <string name="graveyard_time">Время в мертвяке: </string>
     <string name="message_to_scan">Наведите центр камеры на QR код</string>
 

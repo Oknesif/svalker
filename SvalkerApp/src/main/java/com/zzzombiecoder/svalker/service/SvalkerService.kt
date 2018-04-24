@@ -13,6 +13,7 @@ import com.zzzombiecoder.svalker.state.effects.LifeEffect
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.withLatestFrom
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
 import timber.log.Timber
@@ -24,6 +25,8 @@ class SvalkerService : Service() {
             by lazy { VibrationController(applicationContext) }
     private val notificationController: NotificationController
             by lazy { NotificationController(this) }
+    private val headsetController: HeadsetController
+            by lazy { HeadsetController(this) }
 
     private val stateSubject: Subject<State> = BehaviorSubject.create()
     private val spectrumDataSubject: Subject<SpectrumData> = BehaviorSubject.create()
@@ -61,9 +64,19 @@ class SvalkerService : Service() {
                 }, {
                     Timber.e(it)
                 })
-        val signals = spectrumDataSubject
-                .toSignalType()
+        val signalsFromAudion = spectrumDataSubject.toSignalType()
+        val signals = signalsFromAudion
+                .withLatestFrom(headsetController.isWiredHeadsetOn()) { first, second ->
+                    first to second
+                }.map {
+                    if (it.second.not()) {
+                        SignalType.Unplugged
+                    } else {
+                        it.first
+                    }
+                }
                 .subscribe { signalSubject.onNext(it) }
+
         val signalEffects = signalSubject.toEffects()
         val commands = commandSubject.map { it.toEffect() }
         val effects = Observable.merge(life, signalEffects, commands)
@@ -72,11 +85,13 @@ class SvalkerService : Service() {
                 .scan(getInitialState()) { state, effect ->
                     effect.apply(state)
                 }.subscribe {
+                    vibrationController.isEnabled = it is State.Normal
                     stateSubject.onNext(it)
                 }
 
-        vibrationController.subscribe(signalSubject)
-        disposable = CompositeDisposable(spectrumData, stateChanges, signals)
+        val vibrator = vibrationController.subscribe(signalSubject)
+
+        disposable = CompositeDisposable(spectrumData, stateChanges, signals, vibrator)
         super.onCreate()
     }
 
@@ -86,7 +101,6 @@ class SvalkerService : Service() {
 
     override fun onDestroy() {
         disposable.dispose()
-        vibrationController.unsubscribe()
         super.onDestroy()
     }
 }

@@ -18,6 +18,7 @@ enum class SignalType {
     Radiation3,
     Radiation4,
     Radiation5,
+    Unplugged,
     None
 }
 
@@ -61,6 +62,9 @@ object SignalsByFrequency : HashMap<SignalType, FrequencyRange>() {
                 SignalType.None -> {
                     FrequencyRange(0.0, 3000.0)
                 }
+                SignalType.Unplugged -> {
+                    FrequencyRange(-1.0, -1.0)
+                }
             }
             put(signalType, frequencyRange)
         }
@@ -69,6 +73,9 @@ object SignalsByFrequency : HashMap<SignalType, FrequencyRange>() {
 
 fun getEffectSequenceBySignal(signalType: SignalType): IEffectSequence {
     return when (signalType) {
+        SignalType.Unplugged -> {
+            EffectSequence(DeathEffect(CauseOfDeath.DETECTOR_DETACHED), 10L, TimeUnit.SECONDS)
+        }
         SignalType.None -> {
             NoneEffectSequence()
         }

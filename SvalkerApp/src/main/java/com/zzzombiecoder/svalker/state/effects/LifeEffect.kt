@@ -40,8 +40,8 @@ class LifeEffect : Effect {
 
     private fun State.Normal.advanceTimeForModifiers() {
         for (i in 0 until EffectModifier.values().size) {
-            if (effectModifiersTime[i] > 0) {
-                effectModifiersTime[i] = effectModifiersTime[i] - 1
+            if (effectModifiersLastSeconds[i] > 0) {
+                effectModifiersLastSeconds[i] = effectModifiersLastSeconds[i] - 1
             }
         }
     }

@@ -1,9 +1,7 @@
 package com.zzzombiecoder.svalker.views
 
 import android.app.Activity
-import android.content.Context
 import android.graphics.Color
-import android.os.Vibrator
 import android.widget.TextView
 import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
@@ -33,6 +31,8 @@ class MainView(
         val stateTitle = activity.getString(R.string.state)
         val healthTitle = activity.getString(R.string.health)
         val radiationTitle = activity.getString(R.string.radiation)
+        val psyHealthTitle = activity.getString(R.string.psy_health)
+        val effectsTitle = activity.getString(R.string.effect_modifiers)
         val stateString = when (state) {
             is State.NotInGame -> activity.getString(R.string.not_in_game)
             is State.Normal -> activity.getString(R.string.normal)
@@ -50,6 +50,16 @@ class MainView(
                 bold { append("$radiationTitle: ") }
                 append(state.radiation.toString())
                 append("\n")
+                bold { append("$psyHealthTitle: ") }
+                append(state.psy.toString())
+                append("\n")
+
+                val modifiers = state.getActiveModifiers()
+                if (modifiers.isEmpty().not()) {
+                    bold { append(effectsTitle) }
+                    append(modifiers.joinToString { "$it, " })
+                    append("\n")
+                }
             }
             if (state is State.Dead) {
                 bold { append(graveyardTime) }
@@ -65,6 +75,7 @@ class MainView(
         val signalTitle = activity.getString(R.string.last_received_signal)
         val signalColor = when (signal) {
             SignalType.None -> Color.WHITE
+            SignalType.Unplugged -> Color.RED
             SignalType.Radiation1 -> Color.YELLOW
             SignalType.Radiation2 -> Color.YELLOW
             SignalType.Radiation3 -> Color.YELLOW
@@ -78,6 +89,7 @@ class MainView(
             SignalType.Psy_controller -> Color.CYAN
         }
         val signalText = when (signal) {
+            SignalType.Unplugged -> activity.getString(R.string.unplugged)
             SignalType.None -> activity.getString(R.string.none)
             SignalType.Radiation1 -> activity.getString(R.string.radiation1)
             SignalType.Radiation2 -> activity.getString(R.string.radiation2)

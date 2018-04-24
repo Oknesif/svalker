@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit
 fun Command.toEffect(): Effect {
     return when (this) {
         Command.REVIVE -> ReviveEffect()
-        Command.DIE -> DeathEffect()
+        Command.DIE -> DeathEffect(causeOfDeath = CauseOfDeath.SUICIDE)
         Command.HEAL -> AddModifierEffect(EffectModifier.HEAL, TimeUnit.MINUTES.toSeconds(20))
         Command.VODKA -> AddModifierEffect(EffectModifier.VODKA, TimeUnit.MINUTES.toSeconds(12))
         Command.ANTI_RAD -> AddModifierEffect(EffectModifier.ANTI_RAD, TimeUnit.MINUTES.toSeconds(20))
