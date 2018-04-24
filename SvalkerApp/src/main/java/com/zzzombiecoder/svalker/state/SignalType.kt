@@ -93,7 +93,7 @@ fun getEffectSequenceBySignal(signalType: SignalType): IEffectSequence {
         }
         SignalType.Studen -> {
             val periods = LongArray(30) { 1000L }
-            val effect = Array<Effect>(30) { ReduceHealthEffect(it * 5.0 + 5.0) }
+            val effect = Array<Effect>(30) { ReduceHealthEffect(it * 0.5 + 0.5) }
             EffectSequence(periods, effect)
         }
         SignalType.Electra -> {
@@ -107,19 +107,19 @@ fun getEffectSequenceBySignal(signalType: SignalType): IEffectSequence {
             EffectSequence(periods, effects)
         }
         SignalType.Radiation1 -> {
-            EffectSequence(RadiationSpotEffect(1.0), 1L, TimeUnit.SECONDS)
+            EffectSequence(RadiationSpotEffect(0.3), 1L, TimeUnit.SECONDS)
         }
         SignalType.Radiation2 -> {
-            EffectSequence(RadiationSpotEffect(2.0), 1L, TimeUnit.SECONDS)
+            EffectSequence(RadiationSpotEffect(0.7), 1L, TimeUnit.SECONDS)
         }
         SignalType.Radiation3 -> {
-            EffectSequence(RadiationSpotEffect(3.0), 1L, TimeUnit.SECONDS)
+            EffectSequence(RadiationSpotEffect(2.5), 1L, TimeUnit.SECONDS)
         }
         SignalType.Radiation4 -> {
             EffectSequence(RadiationSpotEffect(4.0), 1L, TimeUnit.SECONDS)
         }
         SignalType.Radiation5 -> {
-            EffectSequence(RadiationSpotEffect(5.0), 1L, TimeUnit.SECONDS)
+            EffectSequence(RadiationSpotEffect(8.0), 1L, TimeUnit.SECONDS)
         }
     }
 }

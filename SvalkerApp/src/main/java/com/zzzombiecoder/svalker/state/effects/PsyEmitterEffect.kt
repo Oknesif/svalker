@@ -9,11 +9,16 @@ class PsyEmitterEffect : Effect {
 
     override fun apply(state: State): State {
         if (state is State.Normal) {
-            if (state.getEffectModifierTime(EffectModifier.PSY_BLOCK) > 0) {
-                var newHp = state.health - hpReduce
-                if (newHp < MAX_HEALTH * 0.3) {
-                    newHp = MAX_HEALTH * 0.3
+            if (state.getEffectModifierTime(EffectModifier.PSY_BLOCK) <= 0) {
+                val minHealth = MAX_HEALTH * 0.3
+                var newHp = state.health
+                if (newHp > minHealth) {
+                    newHp = state.health - hpReduce
+                    if (newHp < minHealth) {
+                        newHp = minHealth
+                    }
                 }
+
                 val newPsy = state.psy - psyReduce
                 return if (newPsy <= 0) {
                     State.Zombie()
