@@ -1,5 +1,12 @@
 <resources>
 
+    <style name="BottomPanelText" parent="TextAppearance.AppCompat">
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:textColor">@color/svalker_green</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
         <!-- Customize your theme here. -->

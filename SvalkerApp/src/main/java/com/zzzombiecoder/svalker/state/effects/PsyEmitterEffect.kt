@@ -10,7 +10,7 @@ class PsyEmitterEffect : Effect {
     override fun apply(state: State): State {
         if (state is State.Normal) {
             if (state.getEffectModifierTime(EffectModifier.PSY_BLOCK) <= 0) {
-                val minHealth = MAX_HEALTH * 0.3
+                val minHealth = MAX_HEALTH / 3.0
                 var newHp = state.health
                 if (newHp > minHealth) {
                     newHp = state.health - hpReduce

@@ -2,6 +2,13 @@ package com.zzzombiecoder.svalker.views
 
 import android.app.Activity
 import android.graphics.Color
+import android.graphics.drawable.Drawable
+import android.support.constraint.ConstraintLayout
+import android.support.transition.TransitionManager
+import android.support.v4.content.ContextCompat
+import android.view.View
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 import android.widget.TextView
 import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
@@ -9,23 +16,38 @@ import androidx.core.text.color
 import com.zzzombiecoder.svalker.R
 import com.zzzombiecoder.svalker.state.SignalType
 import com.zzzombiecoder.svalker.state.State
-
-interface IMainView {
-
-    fun updateUserState(state: State)
-
-    fun updateSignalInfo(signal: SignalType)
-
-}
+import com.zzzombiecoder.svalker.utils.setOnFlingListener
 
 class MainView(
         private val activity: Activity
 ) : IMainView {
 
+    private val mainLayout: ConstraintLayout = activity.findViewById(R.id.main_layout)
+    private val healthBarView: BarView = activity.findViewById(R.id.health_bar_view)
+
+    private val psyBarView: BarView = activity.findViewById(R.id.psy_bar_view)
+    private val bottomPanelView: View = activity.findViewById(R.id.bottom_panel_view)
+    private val effectView: View = activity.findViewById(R.id.effect_view)
+
     private val stateView: TextView = activity.findViewById(R.id.state_txt)
     private val signalView: TextView = activity.findViewById(R.id.signal_txt)
 
+    init {
+        effectView.setOnFlingListener { _, velocityY ->
+            changeBottomPanelVisibility(velocityY < 0)
+        }
+    }
+
     override fun updateUserState(state: State) {
+        when (state) {
+            is State.Normal -> {
+                healthBarView.setValue(state.health)
+                psyBarView.setValue(state.psy)
+            }
+            is State.NotInGame -> {
+                updateUserState(state.savedState)
+            }
+        }
 
         val graveyardTime = activity.getString(R.string.graveyard_time)
         val stateTitle = activity.getString(R.string.state)
@@ -67,11 +89,11 @@ class MainView(
                 append("Осталось секунд: ${state.timeToRespawnSeconds}")
             }
         }
-
     }
 
-
     override fun updateSignalInfo(signal: SignalType) {
+        playEffectAnimation(signal)
+
         val signalTitle = activity.getString(R.string.last_received_signal)
         val signalColor = when (signal) {
             SignalType.None -> Color.WHITE
@@ -110,4 +132,50 @@ class MainView(
         }
     }
 
+    private fun playEffectAnimation(signal: SignalType) {
+        if (signal == SignalType.None) {
+            return
+        }
+        val drawable = getDrawableForEffect(signal)
+        if (drawable != null) {
+            effectView.background = drawable
+            val animation = effectView.animation ?: AlphaAnimation(0f, 1f).apply {
+                duration = 1000
+                repeatCount = 1
+                repeatMode = Animation.REVERSE
+                isFillEnabled = true
+                fillAfter = true
+            }
+            if (animation.hasStarted().not() || animation.hasEnded()) {
+                effectView.startAnimation(animation)
+            }
+        }
+    }
+
+    private fun getDrawableForEffect(signal: SignalType): Drawable? {
+        val drawableId = when (signal) {
+            SignalType.Electra -> R.drawable.light
+            SignalType.Inferno -> R.drawable.heat
+            SignalType.Psy_controller, SignalType.Psy_emmiter -> R.drawable.mind
+            SignalType.Studen -> R.drawable.slime
+            else -> return null
+        }
+        return ContextCompat.getDrawable(activity, drawableId)
+    }
+
+    private fun changeBottomPanelVisibility(visible: Boolean) {
+        val params = bottomPanelView.layoutParams as ConstraintLayout.LayoutParams
+        params.bottomToBottom = if (visible) {
+            ConstraintLayout.LayoutParams.PARENT_ID
+        } else {
+            ConstraintLayout.LayoutParams.UNSET
+        }
+        params.topToBottom = if (visible) {
+            ConstraintLayout.LayoutParams.UNSET
+        } else {
+            ConstraintLayout.LayoutParams.PARENT_ID
+        }
+        bottomPanelView.layoutParams = params
+        TransitionManager.beginDelayedTransition(mainLayout)
+    }
 }

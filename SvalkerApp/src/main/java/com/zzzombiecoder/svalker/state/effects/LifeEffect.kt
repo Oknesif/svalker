@@ -13,28 +13,33 @@ class LifeEffect : Effect {
     private val radiationReduce = 0.06
 
     override fun apply(state: State): State {
-        if (state is State.Normal) {
-            state.advanceTimeForModifiers()
+        return when (state) {
+            is State.Normal -> {
+                state.advanceTimeForModifiers()
 
-            var newRadiation = state.radiation - state.calculateRadiationReduce()
-            newRadiation = if (newRadiation < 0) 0.0 else newRadiation
-            val hpReduceByRad = newRadiation * radiationHpCoefficient
-            val hpRegen = state.calculateHpRegen()
-            var newHp = state.health - hpReduceByRad + hpRegen
-            newHp = if (newHp > MAX_HEALTH) MAX_HEALTH else newHp
+                var newRadiation = state.radiation - state.calculateRadiationReduce()
+                newRadiation = if (newRadiation < 0) 0.0 else newRadiation
+                val hpReduceByRad = newRadiation * radiationHpCoefficient
+                val hpRegen = state.calculateHpRegen()
+                var newHp = state.health - hpReduceByRad + hpRegen
+                newHp = if (newHp > MAX_HEALTH) MAX_HEALTH else newHp
 
-            val psyRegen = psyRegen
-            var newPsi = state.psy + psyRegen
-            newPsi = if (newPsi > MAX_PSI) MAX_PSI else newPsi
+                val psyRegen = psyRegen
+                var newPsi = state.psy + psyRegen
+                newPsi = if (newPsi > MAX_PSI) MAX_PSI else newPsi
 
-            return when {
-                newHp <= 0 -> State.Dead(cause = CauseOfDeath.RADIATION)
-                newPsi <= 0 -> State.Zombie()
-                else -> state.copy(health = newHp, psy = newPsi, radiation = newRadiation)
+                return when {
+                    newHp <= 0 -> State.Dead(cause = CauseOfDeath.RADIATION)
+                    newPsi <= 0 -> State.Zombie()
+                    else -> state.copy(health = newHp, psy = newPsi, radiation = newRadiation)
+                }
             }
-
-        } else {
-            return state
+            is State.NotInGame -> {
+                val innerState = state.savedState
+                val newState = this@LifeEffect.apply(innerState)
+                state.copy(savedState = newState)
+            }
+            else -> state
         }
     }
 

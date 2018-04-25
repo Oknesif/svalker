@@ -16,24 +16,24 @@
             android:id="@+id/stop_service_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Выйти из программы" />
+            android:text="@string/leave_zone" />
 
         <Button
             android:id="@+id/die_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Умереть" />
+            android:text="@string/die" />
 
         <Button
             android:id="@+id/revive_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Возродиться" />
+            android:text="@string/revive" />
 
         <Button
             android:id="@+id/scanner_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Сканер кодов" />
+            android:text="@string/scanner" />
     </LinearLayout>
 </android.support.design.widget.NavigationView>

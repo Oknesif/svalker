@@ -5,7 +5,7 @@ import com.zzzombiecoder.svalker.state.State
 class DeactivateReceiverEffect: Effect {
 
     override fun apply(state: State): State {
-        return State.NotInGame(state)
+        return state as? State.NotInGame ?: State.NotInGame(state)
     }
 
 }

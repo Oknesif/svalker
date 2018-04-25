@@ -35,19 +35,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_main_new)
         mainView = MainView(this)
-
-        findViewById<View>(R.id.stop_service_button).setOnClickListener { stopService(serviceIntent) }
-        findViewById<View>(R.id.die_button).setOnClickListener { commandSubject.onNext(Command.DIE) }
-        findViewById<View>(R.id.revive_button).setOnClickListener { commandSubject.onNext(Command.REVIVE) }
-        findViewById<View>(R.id.scanner_button).setOnClickListener {
-            val integrator = IntentIntegrator(this)
-            integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
-            integrator.setPrompt(getString(R.string.message_to_scan))
-            integrator.setOrientationLocked(false)
-            integrator.initiateScan()
-        }
+        setClickListeners()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -90,6 +80,19 @@ class MainActivity : AppCompatActivity() {
         super.onStop()
         unbindService(serviceConnection)
         disposable.dispose()
+    }
+
+    private fun setClickListeners() {
+        findViewById<View>(R.id.stop_service_button).setOnClickListener { stopService(serviceIntent) }
+        findViewById<View>(R.id.die_button).setOnClickListener { commandSubject.onNext(Command.DIE) }
+        findViewById<View>(R.id.revive_button).setOnClickListener { commandSubject.onNext(Command.REVIVE) }
+        findViewById<View>(R.id.scanner_button).setOnClickListener {
+            val integrator = IntentIntegrator(this)
+            integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
+            integrator.setPrompt(getString(R.string.message_to_scan))
+            integrator.setOrientationLocked(false)
+            integrator.initiateScan()
+        }
     }
 
     private val serviceConnection = object : ServiceConnection {

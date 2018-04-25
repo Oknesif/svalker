@@ -12,7 +12,7 @@ class PsyControllerEffect : Effect {
             val coefficient =
                     if (state.getEffectModifierTime(EffectModifier.PSY_BLOCK) > 0) 0.5
                     else 1.0
-            val minHealth = MAX_HEALTH * 0.3
+            val minHealth = MAX_HEALTH / 3.0
             var newHp = state.health
             if (newHp > minHealth) {
                 newHp = state.health - (hpReduce * coefficient)

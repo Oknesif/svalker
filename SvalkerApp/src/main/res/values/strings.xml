@@ -22,5 +22,9 @@
     <string name="unplugged">отключен приемник</string>
     <string name="graveyard_time">Время в мертвяке: </string>
     <string name="message_to_scan">Наведите центр камеры на QR код</string>
+    <string name="scanner">Сканер</string>
+    <string name="leave_zone">Покинуть Зону</string>
+    <string name="die">Умереть</string>
+    <string name="revive">Возродиться</string>
 
 </resources>
