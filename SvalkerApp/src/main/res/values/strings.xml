@@ -24,4 +24,6 @@
     <string name="revive">Возродиться</string>
     <string name="yes">да</string>
     <string name="no">нет</string>
+    <string name="wrong_qr">неверный код</string>
+    <string name="used_qr">Этот код уже был использован</string>
 </resources>

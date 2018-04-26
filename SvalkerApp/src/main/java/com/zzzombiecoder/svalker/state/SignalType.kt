@@ -42,7 +42,7 @@ object SignalsByFrequency : HashMap<SignalType, FrequencyRange>() {
                     FrequencyRange(228.0, 250.0)
                 }
                 SignalType.Graveyard -> {
-                    FrequencyRange(145.0, 160.0)
+                    FrequencyRange(160.0, 200.0)
                 }
                 SignalType.Radiation1 -> {
                     FrequencyRange(1000.0, 1080.0)

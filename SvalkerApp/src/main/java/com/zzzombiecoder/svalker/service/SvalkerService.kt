@@ -6,6 +6,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
+import com.crashlytics.android.Crashlytics
 import com.zzzombiecoder.svalker.spectrum.analysis.Recorder
 import com.zzzombiecoder.svalker.spectrum.analysis.SpectrumData
 import com.zzzombiecoder.svalker.state.*

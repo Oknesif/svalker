@@ -16,7 +16,6 @@ fun String.getCode(): Code? {
                 return code
             }
         }
-
     }
     return null
 }

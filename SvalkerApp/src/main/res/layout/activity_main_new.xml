@@ -217,14 +217,14 @@
             android:drawableTop="@drawable/ic_sentiment"
             android:text="@string/die" />
 
-        <TextView
-            android:id="@+id/revive_button"
-            style="@style/BottomPanelText"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:drawableTop="@drawable/ic_revive"
-            android:text="@string/revive" />
+        <!--<TextView-->
+            <!--android:id="@+id/revive_button"-->
+            <!--style="@style/BottomPanelText"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:drawableTop="@drawable/ic_revive"-->
+            <!--android:text="@string/revive" />-->
 
         <TextView
             android:id="@+id/scanner_button"
