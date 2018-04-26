@@ -89,7 +89,7 @@ fun getEffectSequenceBySignal(signalType: SignalType): IEffectSequence {
             EffectSequence(GraveyardEffect(), 1L, TimeUnit.SECONDS)
         }
         SignalType.Inferno -> {
-            EffectSequence(ReduceHealthEffect(20.0), 1L, TimeUnit.SECONDS)
+            EffectSequence(ReduceHealthEffect(7.0), 1L, TimeUnit.SECONDS)
         }
         SignalType.Studen -> {
             val periods = LongArray(30) { 1000L }
@@ -99,9 +99,9 @@ fun getEffectSequenceBySignal(signalType: SignalType): IEffectSequence {
         SignalType.Electra -> {
             val periods: LongArray = longArrayOf(500L, 500L, 500L, 500L)
             val effects: Array<Effect> = arrayOf(
-                    ReduceHealthEffect(25.0),
-                    ReduceHealthEffect(15.0),
+                    ReduceHealthEffect(10.0),
                     ReduceHealthEffect(5.0),
+                    ReduceHealthEffect(2.0),
                     ReduceHealthEffect(0.0)
             )
             EffectSequence(periods, effects)
