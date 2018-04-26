@@ -2,10 +2,13 @@ package com.zzzombiecoder.svalker.views
 
 import android.Manifest
 import android.content.ComponentName
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
+import android.support.annotation.StringRes
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import androidx.core.widget.toast
@@ -81,8 +84,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setClickListeners() {
-        findViewById<View>(R.id.stop_service_button).setOnClickListener { stopService(serviceIntent) }
-        findViewById<View>(R.id.die_button).setOnClickListener { commandSubject.onNext(Command.DIE) }
+        findViewById<View>(R.id.stop_service_button).setOnClickListener {
+            showDialog(R.string.leave_zone_description) { _, _ -> stopService(serviceIntent) }
+        }
+        findViewById<View>(R.id.die_button).setOnClickListener {
+            showDialog(R.string.die_description) { _, _ -> commandSubject.onNext(Command.DIE)  }
+        }
         findViewById<View>(R.id.revive_button).setOnClickListener { commandSubject.onNext(Command.REVIVE) }
         findViewById<View>(R.id.scanner_button).setOnClickListener {
             val integrator = IntentIntegrator(this)
@@ -113,5 +120,14 @@ class MainActivity : AppCompatActivity() {
 
             (service as ServiceBinder).setCommandSource(commandSubject)
         }
+    }
+
+    private fun showDialog(@StringRes textId: Int, action: (dialog: DialogInterface, which: Int) -> Unit) {
+        AlertDialog.Builder(this, R.style.SvalkerAlertDialogStyle)
+                .setMessage(textId)
+                .setPositiveButton(R.string.yes, action)
+                .setNegativeButton(R.string.no, null)
+                .create()
+                .show()
     }
 }

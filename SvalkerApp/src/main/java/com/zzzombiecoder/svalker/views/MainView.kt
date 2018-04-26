@@ -54,8 +54,12 @@ class MainView(
     }
 
     override fun updateSignalInfo(signal: SignalType) {
-        playEffectAnimation(signal)
-        setGeigerCounterValue(signal)
+        if (messageView.visibility == View.VISIBLE) {
+            arrowView.stop()
+        } else {
+            playEffectAnimation(signal)
+            setGeigerCounterValue(signal)
+        }
     }
 
     private fun updateMessageView(state: State) {
@@ -173,6 +177,7 @@ class MainView(
             SignalType.Inferno -> R.drawable.heat
             SignalType.Psy_controller, SignalType.Psy_emmiter -> R.drawable.mind
             SignalType.Studen -> R.drawable.slime
+            SignalType.Unplugged -> R.drawable.unplugged
             else -> return null
         }
         return ContextCompat.getDrawable(activity, drawableId)

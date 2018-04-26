@@ -18,8 +18,10 @@
     <string name="message_to_scan">Наведите центр камеры на QR код</string>
     <string name="scanner">Сканер</string>
     <string name="leave_zone">Покинуть Зону</string>
-    <string name="leave_zone_description">Ты точно хочешь покинуть зону? Только опытный Мастер-Сталкер сможет провести тебя обратно</string>
+    <string name="leave_zone_description">Ты точно хочешь покинуть зону?\nТолько опытный Мастер-Сталкер сможет провести тебя обратно</string>
     <string name="die">Умереть</string>
     <string name="die_description">Ты уверен что хочешь умереть?</string>
     <string name="revive">Возродиться</string>
+    <string name="yes">да</string>
+    <string name="no">нет</string>
 </resources>

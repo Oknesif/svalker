@@ -7,5 +7,5 @@
     <color name="svalker_grey_transparent">#c81e1e1e</color>
     <color name="colorPrimary">#3f3f41</color>
     <color name="colorPrimaryDark">#1e1e21</color>
-    <color name="colorAccent">#157101</color>
+    <color name="colorAccent">@color/svalker_yellowish</color>
 </resources>

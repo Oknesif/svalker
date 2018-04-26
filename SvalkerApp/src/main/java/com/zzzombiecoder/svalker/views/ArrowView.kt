@@ -38,6 +38,10 @@ class ArrowView @JvmOverloads constructor(
         paint.style = Paint.Style.STROKE
     }
 
+    fun stop() {
+        valueAnimator.cancel()
+    }
+
     fun setTargetValue(value: Int) {
         targetValue = value
         valueAnimator.setFloatValues(animatedValue, (140f / 5) * targetValue + getRandomInterference())

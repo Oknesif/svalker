@@ -16,4 +16,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="SvalkerAlertDialogStyle" parent="Theme.AppCompat.Dialog">
+        <item name="android:colorAccent">@color/svalker_yellowish</item>
+        <item name="android:textColor">@color/svalker_yellowish</item>
+        <item name="android:textColorPrimary">@color/svalker_yellowish</item>
+    </style>
+
 </resources>
