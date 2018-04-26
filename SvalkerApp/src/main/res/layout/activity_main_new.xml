@@ -10,19 +10,20 @@
 
     <ImageView
         android:id="@+id/heart_icon_view"
-        android:layout_width="wrap_content"
+        android:layout_width="70dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginLeft="24dp"
         android:src="@drawable/heart"
+        app:layout_constraintBottom_toTopOf="@id/brain_icon_view"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.zzzombiecoder.svalker.views.BarView
         android:id="@+id/health_bar_view"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginRight="16dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="32dp"
         app:layout_constraintBottom_toBottomOf="@id/heart_icon_view"
         app:layout_constraintLeft_toRightOf="@id/heart_icon_view"
         app:layout_constraintRight_toRightOf="parent"
@@ -30,10 +31,12 @@
 
     <ImageView
         android:id="@+id/brain_icon_view"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
         android:src="@drawable/brain"
+        app:layout_constraintBottom_toTopOf="@id/bottom_background_view"
         app:layout_constraintLeft_toLeftOf="@id/heart_icon_view"
         app:layout_constraintRight_toRightOf="@id/heart_icon_view"
         app:layout_constraintTop_toBottomOf="@id/heart_icon_view" />
@@ -41,7 +44,7 @@
     <com.zzzombiecoder.svalker.views.BarView
         android:id="@+id/psy_bar_view"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="50dp"
         app:layout_constraintBottom_toBottomOf="@id/brain_icon_view"
         app:layout_constraintLeft_toLeftOf="@id/health_bar_view"
         app:layout_constraintRight_toRightOf="@id/health_bar_view"
@@ -84,16 +87,25 @@
         android:id="@+id/scale_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="56dp"
+        android:layout_marginBottom="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="35dp"
         android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
         android:src="@drawable/screen"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/image_radiation_view"
         app:layout_constraintLeft_toLeftOf="@id/bottom_background_view"
         app:layout_constraintRight_toRightOf="@id/bottom_background_view" />
+
+    <com.zzzombiecoder.svalker.views.ArrowView
+        android:id="@+id/arrow_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/border"
+        app:layout_constraintBottom_toBottomOf="@id/scale_view"
+        app:layout_constraintLeft_toLeftOf="@id/scale_view"
+        app:layout_constraintRight_toRightOf="@id/scale_view"
+        app:layout_constraintTop_toTopOf="@id/scale_view" />
 
     <View
         android:id="@+id/effect_view"
@@ -102,19 +114,27 @@
         tools:background="@drawable/slime"
         tools:visibility="gone" />
 
+    <ImageView
+        android:id="@+id/image_radiation_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="32dp"
+        android:src="@drawable/radiation"
+        app:layout_constraintBottom_toTopOf="@id/bottom_panel_view"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
     <LinearLayout
         android:id="@+id/bottom_panel_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="?android:attr/actionBarSize"
-        android:background="@color/colorPrimary"
         android:orientation="horizontal"
-        android:paddingBottom="16dp"
-        android:paddingTop="16dp"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:visibility="gone">
+        app:layout_constraintRight_toRightOf="parent">
 
         <TextView
             android:id="@+id/stop_service_button"

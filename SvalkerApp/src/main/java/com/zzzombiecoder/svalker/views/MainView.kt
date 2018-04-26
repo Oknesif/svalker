@@ -23,9 +23,11 @@ class MainView(
 ) : IMainView {
 
     private val mainLayout: ConstraintLayout = activity.findViewById(R.id.main_layout)
-    private val healthBarView: BarView = activity.findViewById(R.id.health_bar_view)
 
+    private val healthBarView: BarView = activity.findViewById(R.id.health_bar_view)
     private val psyBarView: BarView = activity.findViewById(R.id.psy_bar_view)
+    private val arrowView: ArrowView = activity.findViewById(R.id.arrow_view)
+
     private val bottomPanelView: View = activity.findViewById(R.id.bottom_panel_view)
     private val effectView: View = activity.findViewById(R.id.effect_view)
 
@@ -93,6 +95,7 @@ class MainView(
 
     override fun updateSignalInfo(signal: SignalType) {
         playEffectAnimation(signal)
+        setGeigerCounterValue(signal)
 
         val signalTitle = activity.getString(R.string.last_received_signal)
         val signalColor = when (signal) {
@@ -130,6 +133,18 @@ class MainView(
             append("\n")
             bold { color(signalColor) { append(signalText) } }
         }
+    }
+
+    private fun setGeigerCounterValue(signal: SignalType) {
+        val targetValue = when (signal) {
+            SignalType.Radiation1 -> 1
+            SignalType.Radiation2 -> 2
+            SignalType.Radiation3 -> 3
+            SignalType.Radiation4 -> 4
+            SignalType.Radiation5 -> 5
+            else -> 0
+        }
+        arrowView.setTargetValue(targetValue)
     }
 
     private fun playEffectAnimation(signal: SignalType) {
