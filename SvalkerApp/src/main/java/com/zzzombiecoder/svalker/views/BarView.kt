@@ -18,10 +18,10 @@ class BarView @JvmOverloads constructor(
     private val strokePaint = Paint()
     private val fillPaint = Paint()
     private var currentValue: Double = 1.0
-    private val space = 16.toDP()
+    private val space = 8.toDP()
     private val strokeWidth = 3.toDP()
-    private val halfStroke = 3.toDP() / 2f
-    private val columnWidth = lazy { (width - (4 * space)) / 5f }
+    private val halfStroke = strokeWidth / 2f
+    private val columnWidth = lazy { (width - (9 * space)) / 10f }
 
     init {
         strokePaint.isAntiAlias = true
@@ -46,7 +46,7 @@ class BarView @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        for (i in 0..4) {
+        for (i in 0..9) {
             var left = i * (columnWidth.value + space)
             var top = 0f
             var bottom = height.toFloat()
@@ -57,8 +57,8 @@ class BarView @JvmOverloads constructor(
             right -= halfStroke
             canvas.drawRect(left, top, right, bottom, strokePaint)
 
-            val full = 0.2 + 0.2 * i
-            val empty = 0.2 * i
+            val full = 0.1 + 0.1 * i
+            val empty = 0.1 * i
             top = if (currentValue >= full) {
                 //draw full
                 0f
@@ -67,7 +67,7 @@ class BarView @JvmOverloads constructor(
                     //draw empty
                     continue
                 } else {
-                    val fraction = (currentValue % 0.2 / 0.2f).toFloat()
+                    val fraction = (currentValue % 0.1 / 0.1f).toFloat()
                     val innerHeight = height - 2 * strokeWidth
                     strokeWidth + innerHeight - innerHeight * fraction
                 }

@@ -8,6 +8,8 @@ import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.widget.TextView
+import androidx.core.text.buildSpannedString
+import androidx.core.text.scale
 import com.zzzombiecoder.svalker.R
 import com.zzzombiecoder.svalker.state.SignalType
 import com.zzzombiecoder.svalker.state.State
@@ -28,6 +30,8 @@ class MainView(
     private val antiRadView: TextView = activity.findViewById(R.id.antirad_view)
     private val antiPsyView: TextView = activity.findViewById(R.id.antipsy_view)
 
+    private val messageView: TextView = activity.findViewById(R.id.message_view)
+
     override fun updateUserState(state: State) {
         when (state) {
             is State.Normal -> {
@@ -46,19 +50,62 @@ class MainView(
             }
         }
         updateEffectModifierPannel(state)
-
-        val stateString = when (state) {
-            is State.NotInGame -> activity.getString(R.string.not_in_game)
-            is State.Normal -> activity.getString(R.string.normal)
-            is State.Dead -> activity.getString(R.string.dead)
-            is State.Zombie -> activity.getString(R.string.zombie)
-        }
-//        status.text = "Статус: $stateString"
+        updateMessageView(state)
     }
 
     override fun updateSignalInfo(signal: SignalType) {
         playEffectAnimation(signal)
         setGeigerCounterValue(signal)
+    }
+
+    private fun updateMessageView(state: State) {
+        messageView.visibility = if (state is State.Normal) View.GONE else View.VISIBLE
+
+        val (title, description, time) = when (state) {
+            is State.NotInGame -> {
+                Triple(
+                        activity.getString(R.string.not_in_zone),
+                        activity.getString(R.string.not_in_zone_description),
+                        null)
+            }
+            is State.Dead -> {
+                val hours = TimeUnit.SECONDS.toHours(state.timeToRespawnSeconds)
+                Triple(
+                        activity.getString(R.string.dead),
+                        if (hours < 2) {
+                            activity.getString(R.string.dead_description_additional)
+                        } else {
+                            activity.getString(R.string.dead_description)
+                        },
+                        state.timeToRespawnSeconds.toTimeFormat()
+                )
+            }
+            is State.Zombie -> {
+                Triple(
+                        activity.getString(R.string.zombie),
+                        activity.getString(R.string.zombie_description),
+                        state.timeToDeath.toTimeFormat()
+                )
+            }
+            is State.Normal -> {
+                Triple("", "", null)
+            }
+        }
+        val text = buildSpannedString {
+            scale(2f) { append("$title\n\n") }
+            append("$description\n\n")
+            if (time != null) {
+                scale(3f) { append("$time") }
+            }
+        }
+        messageView.text = text
+    }
+
+    private fun Long.toTimeFormat(): String {
+        val hours = TimeUnit.SECONDS.toHours(this)
+        val minutes = TimeUnit.SECONDS.toMinutes(this) - TimeUnit.HOURS.toMinutes(hours)
+        val seconds = this - TimeUnit.MINUTES.toSeconds(minutes) - TimeUnit.HOURS.toSeconds(hours)
+        return "%02d:%02d:%02d".format(hours, minutes, seconds)
     }
 
     private fun updateEffectModifierPannel(state: State) {

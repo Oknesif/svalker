@@ -51,8 +51,6 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     commandSubject.onNext(code.toCommand())
                 }
-            } else {
-                toast("canceled")
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data)

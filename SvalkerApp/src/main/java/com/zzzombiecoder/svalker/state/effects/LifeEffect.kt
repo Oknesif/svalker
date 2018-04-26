@@ -34,6 +34,14 @@ class LifeEffect : Effect {
                     else -> state.copy(health = newHp, psy = newPsi, radiation = newRadiation)
                 }
             }
+            is State.Zombie -> {
+                val timeLast = state.timeToDeath - 1
+                if (timeLast <= 0) {
+                    State.Dead(cause = CauseOfDeath.ZOMBIE)
+                } else {
+                    state.copy(timeToDeath = timeLast)
+                }
+            }
             is State.NotInGame -> {
                 val innerState = state.savedState
                 val newState = this@LifeEffect.apply(innerState)

@@ -2,7 +2,9 @@
 <resources>
     <color name="svalker_green">#7aae2f</color>
     <color name="svalker_yellow">#807208</color>
+    <color name="svalker_yellowish">#dcb455</color>
     <color name="svalker_red">#750008</color>
+    <color name="svalker_grey_transparent">#c81e1e1e</color>
     <color name="colorPrimary">#3f3f41</color>
     <color name="colorPrimaryDark">#1e1e21</color>
     <color name="colorAccent">#157101</color>
