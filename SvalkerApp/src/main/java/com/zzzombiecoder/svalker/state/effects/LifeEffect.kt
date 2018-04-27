@@ -44,8 +44,12 @@ class LifeEffect : Effect {
             }
             is State.NotInGame -> {
                 val innerState = state.savedState
-                val newState = this@LifeEffect.apply(innerState)
-                state.copy(savedState = newState)
+                val newState = apply(innerState)
+                if (newState is State.Normal) {
+                    state.copy(savedState = newState)
+                } else {
+                    state
+                }
             }
             else -> state
         }

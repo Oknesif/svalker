@@ -5,7 +5,7 @@ import com.zzzombiecoder.svalker.state.effects.EffectModifier
 sealed class State {
 
     data class NotInGame(
-            val savedState: State = State.Normal()
+            val savedState: State.Normal = State.Normal()
     ) : State()
 
     data class Normal(
