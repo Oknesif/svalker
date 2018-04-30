@@ -9,6 +9,7 @@ import timber.log.Timber
 
 class SvalkerApplication : Application() {
 
+    @Suppress("SimplifyBooleanWithConstants")
     override fun onCreate() {
         super.onCreate()
         if (BuildConfig.DEBUG == true) {

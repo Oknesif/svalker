@@ -49,7 +49,7 @@ class MainView(
                 updateUserState(state.savedState)
             }
         }
-        updateEffectModifierPannel(state)
+        updateEffectModifierPanel(state)
         updateMessageView(state)
     }
 
@@ -112,7 +112,7 @@ class MainView(
         return "%02d:%02d:%02d".format(hours, minutes, seconds)
     }
 
-    private fun updateEffectModifierPannel(state: State) {
+    private fun updateEffectModifierPanel(state: State) {
         if (state is State.Normal) {
             vodkaView.setActiveModifier(state.getEffectModifierTime(EffectModifier.VODKA))
             healView.setActiveModifier(state.getEffectModifierTime(EffectModifier.HEAL))
@@ -175,7 +175,7 @@ class MainView(
         val drawableId = when (signal) {
             SignalType.Electra -> R.drawable.light
             SignalType.Inferno -> R.drawable.heat
-            SignalType.Psy_controller, SignalType.Psy_emmiter -> R.drawable.mind
+            SignalType.PsyController, SignalType.PsyEmmiter -> R.drawable.mind
             SignalType.Studen -> R.drawable.slime
             SignalType.Unplugged -> R.drawable.unplugged
             else -> return null

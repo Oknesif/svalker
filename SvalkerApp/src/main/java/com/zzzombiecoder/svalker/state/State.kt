@@ -8,11 +8,12 @@ sealed class State {
             val savedState: State.Normal = State.Normal()
     ) : State()
 
+
     data class Normal(
             val health: Double = MAX_HEALTH,
             val psy: Double = MAX_PSI,
             val radiation: Double = 0.0,
-            val effectModifiersLastSeconds: LongArray = LongArray(EffectModifier.values().size)
+            @Suppress("ArrayInDataClass") val effectModifiersLastSeconds: LongArray = LongArray(EffectModifier.values().size)
     ) : State() {
 
         fun setEffectModifierTime(modifier: EffectModifier, seconds: Long) {

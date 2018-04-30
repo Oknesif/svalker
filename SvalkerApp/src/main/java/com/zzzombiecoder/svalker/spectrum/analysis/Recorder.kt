@@ -47,7 +47,7 @@ class Recorder {
                     .filter { stft.nElemSpectrumAmp() >= analyzerParam.nFFTAverage }
                     .map {
                         stft.calculatePeak()
-                        SpectrumData(stft.spectrumAmpDB, stft.maxAmpFreq, stft.maxAmpDB)
+                        SpectrumData(stft.spectrumAmpDB, stft.maxAmpFreq)
                     }
                     .share()
 }

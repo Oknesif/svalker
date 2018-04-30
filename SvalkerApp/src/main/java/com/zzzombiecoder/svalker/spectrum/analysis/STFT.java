@@ -34,6 +34,7 @@ import static java.lang.Math.sin;
 import static java.lang.Math.sqrt;
 
 // Short Time Fourier Transform
+@SuppressWarnings("ALL")
 public class STFT {
     // data for frequency Analysis
     private double[] spectrumAmpOutCum;

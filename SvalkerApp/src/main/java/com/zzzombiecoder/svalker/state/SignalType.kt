@@ -10,8 +10,8 @@ enum class SignalType {
     Electra,
     Studen,
     Inferno,
-    Psy_emmiter,
-    Psy_controller,
+    PsyEmmiter,
+    PsyController,
     Graveyard,
     Radiation1,
     Radiation2,
@@ -26,10 +26,10 @@ object SignalsByFrequency : HashMap<SignalType, FrequencyRange>() {
     init {
         for (signalType in SignalType.values()) {
             val frequencyRange: FrequencyRange = when (signalType) {
-                SignalType.Psy_emmiter -> {
+                SignalType.PsyEmmiter -> {
                     FrequencyRange(70.0, 110.0)
                 }
-                SignalType.Psy_controller -> {
+                SignalType.PsyController -> {
                     FrequencyRange(130.0, 150.0)
                 }
                 SignalType.Inferno -> {
@@ -79,10 +79,10 @@ fun getEffectSequenceBySignal(signalType: SignalType): IEffectSequence {
         SignalType.None -> {
             NoneEffectSequence()
         }
-        SignalType.Psy_emmiter -> {
+        SignalType.PsyEmmiter -> {
             EffectSequence(PsyEmitterEffect(), 1L, TimeUnit.SECONDS)
         }
-        SignalType.Psy_controller -> {
+        SignalType.PsyController -> {
             EffectSequence(PsyControllerEffect(), 1L, TimeUnit.SECONDS)
         }
         SignalType.Graveyard -> {

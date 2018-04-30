@@ -26,6 +26,7 @@
  */
 package com.zzzombiecoder.svalker.spectrum.analysis.fft;
 
+@SuppressWarnings("ALL")
 class RealDoubleFFT_Mixed {
   static final int[] ntryh= new int[] {4, 2, 3, 5};
 
