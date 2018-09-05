@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/CodeGenerator/CodeGenerator.iml" filepath="$PROJECT_DIR$/CodeGenerator/CodeGenerator.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Stalker.iml" filepath="$PROJECT_DIR$/Stalker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Stalker.iml" filepath="$PROJECT_DIR$/.idea/Stalker.iml" />
       <module fileurl="file://$PROJECT_DIR$/SvalkerApp/SvalkerApp.iml" filepath="$PROJECT_DIR$/SvalkerApp/SvalkerApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/codegenapp/codegenapp.iml" filepath="$PROJECT_DIR$/codegenapp/codegenapp.iml" />
     </modules>

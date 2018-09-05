@@ -13,6 +13,6 @@ class HeadsetController(
     fun isWiredHeadsetOn(): Observable<Boolean> {
         val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         return Observable.interval(1, TimeUnit.SECONDS)
-                .map { audioManager.isWiredHeadsetOn }
+                .map { audioManager.isBluetoothA2dpOn }
     }
 }
