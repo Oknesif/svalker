@@ -6,7 +6,6 @@ import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
-import com.crashlytics.android.Crashlytics
 import com.zzzombiecoder.svalker.spectrum.analysis.Recorder
 import com.zzzombiecoder.svalker.spectrum.analysis.SpectrumData
 import com.zzzombiecoder.svalker.state.*
@@ -59,7 +58,8 @@ class SvalkerService : Service() {
 
         val life = Observable.interval(1, TimeUnit.SECONDS)
                 .map { LifeEffect() }
-        val spectrumData = Recorder().getSpectrumAmpDB(50)
+        val spectrumData = Recorder(headsetController)
+                .getSpectrumAmpDB(50)
                 .subscribe({
                     spectrumDataSubject.onNext(it)
                 }, {
@@ -67,7 +67,7 @@ class SvalkerService : Service() {
                 })
         val signalsFromAudion = spectrumDataSubject.toSignalType()
         val signals = signalsFromAudion
-                .withLatestFrom(headsetController.isWiredHeadsetOn()) { first, second ->
+                .withLatestFrom(headsetController.isBluetoothHeadsetConnected()) { first, second ->
                     first to second
                 }.map {
                     if (it.second.not()) {

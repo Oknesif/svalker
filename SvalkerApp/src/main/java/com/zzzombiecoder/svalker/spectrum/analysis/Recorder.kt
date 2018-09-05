@@ -2,10 +2,14 @@ package com.zzzombiecoder.svalker.spectrum.analysis
 
 import android.media.AudioFormat
 import android.media.AudioRecord
+import com.zzzombiecoder.svalker.service.HeadsetController
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
 
-class Recorder {
+
+class Recorder(
+        val headsetController: HeadsetController
+) {
     private val analyzerParam = AnalyzerParameters()
     private val stft = STFT(analyzerParam)
     private val readChunkSize = Math.min(analyzerParam.hopLen, 2048)
@@ -28,26 +32,32 @@ class Recorder {
 
     }
 
-    fun getSpectrumAmpDB(mSec: Long): Observable<SpectrumData> =
-            Observable.interval(mSec, TimeUnit.MILLISECONDS)
-                    .doOnSubscribe {
-                        record = createRecorder()
-                        record?.startRecording()
-                    }
-                    .doOnDispose {
-                        record?.stop()
-                        record?.release()
-                        record = null
-                    }
-                    .doOnNext {
-                        val audioSamples = ShortArray(readChunkSize)
-                        val numOfReadShort = record?.read(audioSamples, 0, readChunkSize) ?: 0
-                        stft.feedData(audioSamples, numOfReadShort)
-                    }
-                    .filter { stft.nElemSpectrumAmp() >= analyzerParam.nFFTAverage }
-                    .map {
-                        stft.calculatePeak()
-                        SpectrumData(stft.spectrumAmpDB, stft.maxAmpFreq)
-                    }
-                    .share()
+    fun getSpectrumAmpDB(mSec: Long): Observable<SpectrumData> {
+        val recordAudioAndFft = Observable.interval(mSec, TimeUnit.MILLISECONDS)
+                .doOnSubscribe {
+                    record = createRecorder()
+                    record?.startRecording()
+                }
+                .doOnDispose {
+                    record?.stop()
+                    record?.release()
+                    record = null
+                }
+                .doOnNext {
+                    val audioSamples = ShortArray(readChunkSize)
+                    val numOfReadShort = record?.read(audioSamples, 0, readChunkSize) ?: 0
+                    stft.feedData(audioSamples, numOfReadShort)
+                }
+                .filter { stft.nElemSpectrumAmp() >= analyzerParam.nFFTAverage }
+                .map {
+                    stft.calculatePeak()
+                    SpectrumData(stft.spectrumAmpDB, stft.maxAmpFreq)
+                }
+
+        return headsetController
+                .startBluetoothSco()
+                .andThen(recordAudioAndFft)
+                .doOnDispose { headsetController.stopBluetoothSco() }
+    }
+
 }
